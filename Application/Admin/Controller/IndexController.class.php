@@ -2,15 +2,55 @@
 namespace Admin\Controller;
 use Think\Controller;
 class IndexController extends Controller {
-
     public function index(){
         $this->logincheck();
         $this->assign('list', 'index');
-        $this->assign('username', session('name'));
+        $this->assign('name', session('name'));
+
+        $show = M("course");
+        $data = $show->select();
+        for($j=0;$j<100;$j++){//注意这里仅仅是100,没有查表,反正可以自己break，尽量调大就好！！！
+            $classes[$j] = json_decode($data[$j]['classrangeid'], true);//把json数据解析为array格式
+            if($classes[$j]==null)//遍历到空串停止
+                break;
+            $temp[$j]="";//初始化
+            for($i=0;$i<100;$i++){
+                if(array_values($classes[$j])[$i]==null)//遍历到空串停止
+                    break;
+                $temp[$j] = $temp[$j]."".array_values($classes[$j])[$i]."、";//将31->高三一班,32->高三二班 变成 xxx->高三一班,高三二班 的结构
+            }
+        }
+        for($i=0;$i<100;$i++){
+            if($temp[$i]==null)//遍历到空串停止
+                break;
+            $age[$i]=array("cla"=>$temp[$i]);//为了构造出与$data相同结构的数组 其实已经是3维数组了
+        }
+//        dump($age);
+//        dump($data);
+        for($i=0;$i<100;$i++) {
+            if($age[$i]==null)
+                break;
+            $data[$i] = array_merge($age[$i], $data[$i]);//合并时，将age的23维与$data的23维合并，否则会从头开始压栈，得不到想要的输出
+        }
+//        dump($data);
+        $this->assign('data',$data);//此时的data多了cla，其余则是从数据库里读出来的，略dt
         $this->display();
     }
+    public function test(){//php实验空间
+        $age2=array("31"=>"60","32"=>"60","33"=>"60");
+        dump($age2);//相当于classes
+        $temp="";
+        for($i=0;$i<10;$i++){
+            if(array_values($age2)[$i]==null)
+                break;
+            $temp = $temp."".array_values($age2)[$i]."、";
+        }
+        dump($temp);
 
-
+        for($i=0;$i<10;$i++)
+            $age[$i]=array("class"=>$temp);
+        dump($age);
+    }
     //检查是否登录
     public function logincheck(){
         $admininfo = M("admin");
@@ -77,60 +117,116 @@ class IndexController extends Controller {
 
     }
 
-
-    /*******************成绩管理*******************/
-    public function score(){
-        $this->logincheck();
-        $this->assign('list', 'score');
-        $this->assign('username', session('name'));
-
-        $courseinfo = M('Course');
-        $admininfo = M('Admin');
-        $adminId = $admininfo->where("username='%s'", session('username'))->getField('id');
-        $courseinfo = $courseinfo->where("adminId=".$adminId)->select();//获取该老师开设的课程
-        $this->assign('courselist', $courseinfo);
-        $this->display();
+    /******************添加课程********************/
+    //尚未检测主键是否会重复
+    public function testInsertCourse($course = null,$teacher = null,$time = null,$people = null,$classes = null){
+        $InsertCourse = M("course");
+        $arr=array(//定义编号和班级名称对于的json
+                    "11" => "高一（1）班", "12" => "高一（2）班", "13" => "高一（3）班", "14" => "高一（4）班", "15" => "高一（5）班", "16" => "高一（6）班", "17" => "高一（7）班", "18" => "高一（8）班", "19" => "高一（9）班", "110" => "高一（10）班", "111" => "高一（11）班", "112" => "高一（12）班", "113" => "高一（13）班", "114" => "高一（14）班", "115" => "高一（15）班", "116" => "高一（16）班", "117" => "高一（17）班", "118" => "高一（18）班", "119" => "高一（19）班", "120" => "高一（20）班", "121" => "高一（21）班", "122" => "高一（22）班", "123" => "高一（23）班", "124" => "高一（24）班", "125" => "高一（25）班", "126" => "高一（26）班", "127" => "高一（27）班", "128" => "高一（28）班", "129" => "高一（29）班", "130" => "高一（30）班",
+                "21" => "高二（1）班", "22" => "高二（2）班", "23" => "高二（3）班", "24" => "高二（4）班", "25" => "高二（5）班", "26" => "高二（6）班", "27" => "高二（7）班", "28" => "高二（8）班", "29" => "高二（9）班", "210" => "高二（10）班", "211" => "高二（11）班", "212" => "高二（12）班", "213" => "高二（13）班", "214" => "高二（14）班", "215" => "高二（15）班", "216" => "高二（16）班", "217" => "高二（17）班", "218" => "高二（18）班", "219" => "高二（19）班", "220" => "高二（20）班", "221" => "高二（21）班", "222" => "高二（22）班", "223" => "高二（23）班", "224" => "高二（24）班", "225" => "高二（25）班", "226" => "高二（26）班", "227" => "高二（27）班", "228" => "高二（28）班", "229" => "高二（29）班", "230" => "高二（30）班",
+            "31" => "高三（1）班", "32" => "高三（2）班", "33" => "高三（3）班", "34" => "高三（4）班", "35" => "高三（5）班", "36" => "高三（6）班", "37" => "高三（7）班", "38" => "高三（8）班", "39" => "高三（9）班", "310" => "高三（10）班", "311" => "高三（11）班", "312" => "高三（12）班", "313" => "高三（13）班", "314" => "高三（14）班", "315" => "高三（15）班", "316" => "高三（16）班", "317" => "高三（17）班", "318" => "高三（18）班", "319" => "高三（19）班", "320" => "高三（20）班", "321" => "高三（21）班", "322" => "高三（22）班", "323" => "高三（23）班", "324" => "高三（24）班", "325" => "高三（25）班", "326" => "高三（26）班", "327" => "高三（27）班", "328" => "高三（28）班", "329" => "高三（29）班", "330" => "高三（30）班"
+        );
+        foreach( $classes as $i)
+        {
+            if($i){//有选中
+                for($j = 0;$j<90;$j++) {//用class号在上面的数组里找到对于的班级名称
+                    if (array_keys($arr)[$j] == $i) {
+                        $k=array_keys($arr)[$j];//记录位置
+                        break;
+                    }
+                }
+                $classes2[$i]= $arr[$k];
+            }
+        }
+        $jsondata = json_encode($classes2);
+        $data['courseName'] = $course;
+        $data['classRangeId'] = $jsondata;
+        $data['adminId'] = $teacher;
+        $data['time'] = $time;
+        $data['peopleNumber'] = $people;
+        $data['choiceNumber'] = 0;
+        if($classes){
+            $InsertCourse->add($data);
+            $this -> success("添加成功!", "index");
+        }
+        else{
+            $this->error("输入信息不完整或错误","index",1);
+        }
     }
+    /*********************删除课程*********************/
+    public function delCourse($cencel = null,$courseId = null){
+        $del = M('course');
+        if($cencel == "取消课程"){
+            $data = $del ->where("courseid='%s'",$courseId) ->delete(); // 成功返回1 失败返回0
+        }
+//        echo $courseId;
+        if($data==1)
+            $this -> success("删除成功!", "index");
+    }
+    /********************成绩管理*********************/
+    public function score(){
+    $this->logincheck();
+    $this->assign('list', 'score');
+    $this->assign('username', session('name'));
 
-    //对当前课堂进行成绩录入工作
+    $show = M("course");
+    $data = $show->select();
+    $this->assign('data',$data);
+    $this->display();
+}
+    //成绩录入
     public function addscore($classid = null){
         $this->logincheck();
         $this->assign('list', 'score');
         $this->assign('username', session('username'));
         $this->display();
     }
-
     /******************管理员管理********************/
     public function adminadmin($fileid = null, $filecomm = null){
         $this->logincheck();
         $this->assign('list', 'file');
         $this->assign('username', session('name'));
-        switch ($filecomm){
-            case "download":break;
-            case "upload":break;
-            default:
-                $this->display();
-                break;
-            }
+
+        $show = M("admin");
+        $data = $show->select();
+        $this->assign('data',$data);
+        $this->display();
+//        switch ($filecomm){
+//            case "download":break;
+//            case "upload":break;
+//            default:
+//                $this->display();
+//                break;
+//            }
     }
+    //添加管理员
+    public function addadmin($name=null,$username=null,$password=null,$root=null){
+        $InsertAdmin = M("admin");
+        $data['name'] = $name;
+        $data['username'] = $username;
+        $data['password'] = $password;
+        $data['root'] = $root;
+        if($data['username']!=null){
+            $InsertAdmin->add($data);
+            $this -> success("添加成功!", "adminadmin");
+        }
 
-//    //文件下载
-//    private function fileDownload(){
-//
-//    }
-//    //文件上传
-//    private function fileUpload(){
-//
-//    }
+    }
+    //删除管理员
+    public function deladmin($cencel = null,$id = null){
+        $del = M('admin');
+        if($cencel == "删除"){
+            $data = $del ->where("id='%s'",$id) ->delete(); // 成功返回1 失败返回0
+        }
+        if($data==1)
+            $this -> success("删除成功!", "adminadmin");
+    }
+    //文件下载
+    private function fileDownload(){
 
+    }
+    //文件上传
+    private function fileUpload(){
 
-
-    /**************test***************/
-    public function test(){
-        $data["1"] = 1;
-        $data["2"] = 2;
-        $jsondata = json_encode($data);
-        $db = M('Course');
-        $db->where("courseId=1")->setField("classRangeId", $jsondata);
     }
 }
