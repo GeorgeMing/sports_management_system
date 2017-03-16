@@ -1,0 +1,55 @@
+<html>
+<head>
+    <script type="text/javascript">
+        var size = 0;
+        function showHint()
+        {
+            var str = "a";
+            var url="__URL__/test_ajax";//定义要发送到服务器的 URL（文件名）
+            url=url+"?q="+str;//把带有输入域内容的参数 (q) 添加到这个 URL
+            url=url+"&sid="+Math.random();//添加一个随机数，以防服务器使用缓存文件
+            xmlHttp=GetXmlHttpObject();//调用 GetXmlHttpObject 函数来创建 XMLHTTP 对象
+            xmlHttp.onreadystatechange=stateChanged;//在事件被触发时告知该对象执行名为 stateChanged 的函数
+            xmlHttp.open("GET",url,true);//用给定的 URL 来打开打开这个 XMLHTTP 对象
+            xmlHttp.send(null);//向服务器发送 HTTP 请求 :此时调到stateChanged函数执行
+        }
+
+        function stateChanged()//状态变成 4 （或 "complete"）时,用响应文本填充 txtHint 占位符 txtHint 的内容
+        {
+            if (xmlHttp.readyState==4 || xmlHttp.readyState=="complete") {
+                document.getElementById("txtHint").innerHTML=xmlHttp.responseText;
+                size = xmlHttp.responseText;
+//                alert(size);
+            }
+        }
+
+        function GetXmlHttpObject()//是解决为不同浏览器创建不同 XMLHTTP 对象的问题
+        {
+            var xmlHttp=null;
+            try {
+                xmlHttp=new XMLHttpRequest();
+            }
+            catch (e) {
+                try {
+                    xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
+                }
+                catch (e) {
+                    xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+                }
+            }
+            return xmlHttp;
+        }
+    </script>
+</head>
+
+<body>
+
+<form>
+    First Name:
+    <input type="button" id="txt1" onclick="showHint()">
+</form>
+
+<p>Suggestions: <span id='txtHint'></span> </p>
+
+</body>
+</html>
