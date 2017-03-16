@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 2017-03-09 11:12:17
+-- Generation Time: 2017-03-16 13:55:00
 -- 服务器版本： 5.7.14
 -- PHP Version: 5.6.25
 
@@ -157,9 +157,7 @@ CREATE TABLE `think_course` (
 --
 
 INSERT INTO `think_course` (`courseId`, `courseName`, `classRangeId`, `adminId`, `time`, `peopleNumber`, `choiceNumber`) VALUES
-(177, '1233', '{"31": "高三（1）班", "32": "高三（2）班", "33": "高三（3）班"}', '123', '123', 123, 0),
-(178, '123123', '{"25": "高二（5）班", "26": "高二（6）班", "31": "高三（1）班", "32": "高三（2）班"}', '123', '123', 123, 0),
-(179, '3424', '{"17": "高一（7）班", "18": "高一（8）班", "19": "高一（9）班"}', '2', '2', 2, 0),
+(184, '123334', '{"17": "高一（7）班", "18": "高一（8）班", "19": "高一（9）班", "25": "高二（5）班", "26": "高二（6）班", "31": "高三（1）班", "32": "高三（2）班", "33": "高三（3）班", "214": "高二（14）班"}', '123', '', 0, 0),
 (180, '1231233', '{"17": "高一（7）班", "18": "高一（8）班", "19": "高一（9）班"}', '1', '1', 1, 0);
 
 -- --------------------------------------------------------
@@ -191,16 +189,23 @@ CREATE TABLE `think_student_score` (
   `id` int(11) NOT NULL,
   `no` varchar(12) NOT NULL,
   `courseId` int(11) NOT NULL,
-  `score` json NOT NULL
+  `score` json NOT NULL,
+  `other_score` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- 转存表中的数据 `think_student_score`
 --
 
-INSERT INTO `think_student_score` (`id`, `no`, `courseId`, `score`) VALUES
-(5, '123456', 175, '0'),
-(6, '123', 174, '0');
+INSERT INTO `think_student_score` (`id`, `no`, `courseId`, `score`, `other_score`) VALUES
+(5, '123456', 175, '0', 0),
+(6, '123', 174, '0', 0),
+(25, '123456', 179, '0', 0),
+(23, '123457', 179, '0', 0),
+(26, '1234', 180, '0', 0),
+(27, '123', 180, '0', 0),
+(28, '123457', 180, '0', 0),
+(30, '123456', 180, '0', 0);
 
 -- --------------------------------------------------------
 
@@ -221,9 +226,10 @@ CREATE TABLE `think_stuinfo` (
 --
 
 INSERT INTO `think_stuinfo` (`no`, `password`, `name`, `sex`, `classId`) VALUES
-('123456', '1234', '张三', 1, 12),
+('123456', '1234', '张三', 1, 19),
 ('123457', '123', '小红', 0, 17),
-('123', '1234', '123', 1, 11);
+('123', '1234', '123', 1, 18),
+('1234', '1234', '12', 1, 18);
 
 --
 -- Indexes for dumped tables
@@ -278,12 +284,12 @@ ALTER TABLE `think_class`
 -- 使用表AUTO_INCREMENT `think_course`
 --
 ALTER TABLE `think_course`
-  MODIFY `courseId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=184;
+  MODIFY `courseId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=185;
 --
 -- 使用表AUTO_INCREMENT `think_student_score`
 --
 ALTER TABLE `think_student_score`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -30,15 +30,14 @@
                                             <td><input name="courseId" value="{$qwe[courseid]}" readonly="true"/></td>
                                             <td>{$qwe[coursename]}</td>
                                             <td>{$qwe[adminid]}</td>
-                                            <!--<td>{$qwe[classrangeid]}</td>-->
-                                            <!--<td><volist name="age" id="ewq">{$ewq[cla]}</volist></td>-->
                                             <td>{$qwe[cla]}</td>
                                             <td>{$qwe[time]}</td>
                                             <td>{$qwe[peoplenumber]}</td>
                                             <td>{$qwe[choicenumber]}</td>
                                             <td width="20%">
                                                 <input name="cencel" type="submit" class="btn btn-warning" value="取消课程"/>
-                                                <button class="btn btn-success">选课学生</button>
+                                                <!--<button class="btn btn-success"><a href="__URL__/course_stu_list">选课学生</a></button>-->
+                                                <a href="__URL__/course_stu_list"><i class="btn btn-success">选课学生</i></a>
                                             </td>
                                         </tr>
                                     </form>

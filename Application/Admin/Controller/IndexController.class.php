@@ -17,7 +17,12 @@ class IndexController extends Controller {
             for($i=0;$i<100;$i++){
                 if(array_values($classes[$j])[$i]==null)//遍历到空串停止
                     break;
-                $temp[$j] = $temp[$j]."".array_values($classes[$j])[$i]."、";//将31->高三一班,32->高三二班 变成 xxx->高三一班,高三二班 的结构
+                if ($temp[$j]=="") {//找到的第一个名字
+                    $temp[$j]=array_values($classes[$j])[$i];
+                }
+                else {//如果找到一个或多个名字，把 $hint  设置为这些名字,并用','分割开
+                    $temp[$j] = $temp[$j]."，".array_values($classes[$j])[$i];//将31->高三一班,32->高三二班 变成 xxx->高三一班,高三二班 的结构
+                }
             }
         }
         for($i=0;$i<100;$i++){
@@ -36,20 +41,15 @@ class IndexController extends Controller {
         $this->assign('data',$data);//此时的data多了cla，其余则是从数据库里读出来的，略dt
         $this->display();
     }
+    public function test_ajax($q=null){
+        $response = session('response');
+        dump($response);
+        echo $response;
+//        echo "<p hidden value='"+$response+"'></p>";
+//        echo "<span id='233'>23323</span>";
+    }
     public function test(){//php实验空间
-        $age2=array("31"=>"60","32"=>"60","33"=>"60");
-        dump($age2);//相当于classes
-        $temp="";
-        for($i=0;$i<10;$i++){
-            if(array_values($age2)[$i]==null)
-                break;
-            $temp = $temp."".array_values($age2)[$i]."、";
-        }
-        dump($temp);
-
-        for($i=0;$i<10;$i++)
-            $age[$i]=array("class"=>$temp);
-        dump($age);
+        $this->display();
     }
     //检查是否登录
     public function logincheck(){
@@ -167,25 +167,56 @@ class IndexController extends Controller {
     public function score(){
     $this->logincheck();
     $this->assign('list', 'score');
-    $this->assign('username', session('name'));
+    $this->assign('name', session('name'));
 
-    $show = M("course");
-    $data = $show->select();
-    $this->assign('data',$data);
-    $this->display();
+        $show = M("course");
+        $data = $show->select();
+        for($j=0;$j<100;$j++){//注意这里仅仅是100,没有查表,反正可以自己break，尽量调大就好！！！
+            $classes[$j] = json_decode($data[$j]['classrangeid'], true);//把json数据解析为array格式
+            if($classes[$j]==null)//遍历到空串停止
+                break;
+            $temp[$j]="";//初始化
+            for($i=0;$i<100;$i++){
+                if(array_values($classes[$j])[$i]==null)//遍历到空串停止
+                    break;
+                $temp[$j] = $temp[$j]."".array_values($classes[$j])[$i]."、";//将31->高三一班,32->高三二班 变成 xxx->高三一班,高三二班 的结构
+            }
+        }
+        for($i=0;$i<100;$i++){
+            if($temp[$i]==null)//遍历到空串停止
+                break;
+            $age[$i]=array("cla"=>$temp[$i]);//为了构造出与$data相同结构的数组 其实已经是3维数组了
+        }
+//        dump($age);
+//        dump($data);
+        for($i=0;$i<100;$i++) {
+            if($age[$i]==null)
+                break;
+            $data[$i] = array_merge($age[$i], $data[$i]);//合并时，将age的23维与$data的23维合并，否则会从头开始压栈，得不到想要的输出
+        }
+//        dump($data);
+        $this->assign('data',$data);//此时的data多了cla，其余则是从数据库里读出来的，略dt
+        $this->display();
 }
     //成绩录入
-    public function addscore($classid = null){
+    public function addscore($courseId = null){
         $this->logincheck();
         $this->assign('list', 'score');
         $this->assign('username', session('username'));
+
+        $scores = M();
+        $sql = "select c.courseName,a.no,b.name,b.sex,a.score
+                from think_student_score a ,think_stuinfo b,think_course c
+                where a.courseId = c.courseId and a.no=b.no and '".$courseId."'=a.courseId";
+        $data = $scores->query($sql);//查询当前登录学生所选的课程
+        $this->assign('data',$data);
         $this->display();
     }
     /******************管理员管理********************/
     public function adminadmin($fileid = null, $filecomm = null){
         $this->logincheck();
         $this->assign('list', 'file');
-        $this->assign('username', session('name'));
+        $this->assign('name', session('name'));
 
         $show = M("admin");
         $data = $show->select();
@@ -221,6 +252,10 @@ class IndexController extends Controller {
         if($data==1)
             $this -> success("删除成功!", "adminadmin");
     }
+
+    public function course_stu_list(){
+        $this->display();
+    }
     //文件下载
     private function fileDownload(){
 
@@ -229,4 +264,25 @@ class IndexController extends Controller {
     private function fileUpload(){
 
     }
+    public function  test_table_ajax($q){
+        $response = session('response');
+        if($q){
+            echo $response;
+        }
+    }
+
+    public function test_table($courseId = null){
+        $this->logincheck();
+        $this->assign('list', 'score');
+        $this->assign('username', session('username'));
+        $scores = M();
+        $sql = "select c.courseName,a.no,b.name,b.sex,a.score
+                from think_student_score a ,think_stuinfo b,think_course c
+                where a.courseId = c.courseId and a.no=b.no and '".$courseId."'=a.courseId";
+        $data = $scores->query($sql);//查询当前登录学生所选的课程
+        session('response', sizeof($data));//放入session缓存中
+        $this->assign('data',$data);
+        $this->display();
+    }
 }
+?>
