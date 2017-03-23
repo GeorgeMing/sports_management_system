@@ -10,20 +10,14 @@ class IndexController extends Controller
         $this->assign('name', session('name'));//右上角显示用户名
         $class_info = M("stuinfo");
         $data1 = $class_info->select();
-//        dump($data1);
-        for($i=0;$i<100;$i++){
-            if($data1[$i]['no'] == session('no')){
-                if (strlen($data1[$i]['classid']) == 2) {
-                    $temp_grade = (int)substr($data1[$i]['classid'], 0, 1);
-                    $temp_class = substr($data1[$i]['classid'], 1, 1);
-                } elseif (strlen($data1[$i]['classid']) == 3) {
-                    $temp_grade = (int)substr($data1[$i]['classid'], 0, 1);
-                    $temp_class = substr($data1[$i]['classid'], 1, 2);
-                }
-            }
-
+        dump($data1);
+        if (strlen($data1[0]['classid']) == 2) {
+            $temp_grade = (int)substr($data1[0]['classid'], 0, 1);
+            $temp_class = substr($data1[0]['classid'], 1, 1);
+        } elseif (strlen($data1[0]['classid']) == 3) {
+            $temp_grade = (int)substr($data1[0]['classid'], 0, 1);
+            $temp_class = substr($data1[0]['classid'], 1, 2);
         }
-
         $class_grade = "高".$temp_grade."(".$temp_class.")"."班";
         $this->assign('class_grade', $class_grade);
         $this->display();
@@ -151,25 +145,6 @@ class IndexController extends Controller
     public function course_list(){//学生选课操作
         $this->logincheck();
         $this->assign('name', session('name'));//右上角显示用户名
-        $class_info = M("stuinfo");
-        $data1 = $class_info->select();
-//        dump($data1);
-        for($i=0;$i<100;$i++){
-            if($data1[$i]['no'] == session('no')){
-                if (strlen($data1[$i]['classid']) == 2) {
-                    $temp_grade = (int)substr($data1[$i]['classid'], 0, 1);
-                    $temp_class = substr($data1[$i]['classid'], 1, 1);
-                } elseif (strlen($data1[$i]['classid']) == 3) {
-                    $temp_grade = (int)substr($data1[$i]['classid'], 0, 1);
-                    $temp_class = substr($data1[$i]['classid'], 1, 2);
-                }
-            }
-        }//显示班级
-
-        $class_grade = "高".$temp_grade."(".$temp_class.")"."班";
-        $this->assign('class_grade', $class_grade);
-
-
         $no = session('no');
 //        dump($no);
         $show2 = M();
