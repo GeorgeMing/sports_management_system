@@ -23,7 +23,7 @@
                                             <volist name="data" id="qwe">
                                                 <form action="__URL__/deladmin" method="post">
                                                     <tr>
-                                                        <td><input name="id" value="{$qwe[id]}" readonly="true"/></td>
+                                                        <td><input name="id" value="{$qwe[id]}" readonly="true" type="hidden"/>{$qwe[id]}</td>
                                                         <td>{$qwe[name]}</td>
                                                         <td>{$qwe[username]}</td>
                                                         <td>{$qwe[password]}</td>

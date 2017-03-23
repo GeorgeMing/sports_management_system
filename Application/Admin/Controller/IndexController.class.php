@@ -251,13 +251,13 @@ class IndexController extends Controller {
         }
     }
     //添加管理员
-    public function addadmin($name=null,$username=null,$password=null,$root=null){
+    public function addadmin($name=null,$username=null,$password=null){
         $this->logincheck();
         $InsertAdmin = M("admin");
         $data['name'] = $name;
         $data['username'] = $username;
         $data['password'] = $password;
-        $data['root'] = $root;
+        $data['root'] = 0;
         if($data['username']!=null){
             $InsertAdmin->add($data);
             $this -> success("添加成功!", "adminadmin");

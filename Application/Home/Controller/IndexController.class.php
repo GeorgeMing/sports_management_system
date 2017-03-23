@@ -114,9 +114,9 @@ class IndexController extends Controller
                 $this->error("两次输入的新密码不相等");
             }
             $stuinfo = M('stuinfo');
-            $no = session("no");
+            $no = session("username");
             $password = $stuinfo->where("no='%s'", $no)->getField("password");
-            dump($password);
+//            dump($password);
             if ($password == $oldpassword) {
                 $stuinfo->where("no='%s'", $no)->setField("password", $newpassword);
                 session("password", $newpassword);
@@ -244,8 +244,8 @@ class IndexController extends Controller
         $data['score_proportion'] = 0;
         $change_choicenumber = M("course");//需要更新改动course
         $data2=$change_choicenumber->where("courseId='%s'",$courseId)->select();
-        dump($data2[0]['choicenumber']);
-        dump($data2);
+//        dump($data2[0]['choicenumber']);
+//        dump($data2);
         if($select == "选课"){
             $select_course->add($data);//插入
             if((int)$data2[0]['choicenumber']>=(int)$data2[0]['peoplenumber']){
@@ -254,7 +254,7 @@ class IndexController extends Controller
             }
             $data2[0]['choicenumber'] = (int)$data2[0]['choicenumber']+1;
             $data2[0]['choicenumber'] = (string)$data2[0]['choicenumber'];
-            dump($data2);
+//            dump($data2);
             $change_choicenumber->where("courseId='%s'",$courseId)->setField("choiceNumber", $data2[0]['choicenumber']);
             $this -> success("选课成功!", "course_list");
         }
@@ -262,7 +262,7 @@ class IndexController extends Controller
             $select_course ->where("courseid='%s' and no='%s'",$courseId,$data['no']) ->delete();//删除
             $data2[0]['choicenumber'] = (int)$data2[0]['choicenumber']-1;
             $data2[0]['choicenumber'] = (string)$data2[0]['choicenumber'];
-            dump($data2);
+//            dump($data2);
             $change_choicenumber->where("courseId='%s'",$courseId)->setField("choiceNumber", $data2[0]['choicenumber']);
             $this -> success("取消选课!", "course_list");
         }

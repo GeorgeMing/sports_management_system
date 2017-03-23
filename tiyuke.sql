@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 2017-03-23 14:25:27
+-- Generation Time: 2017-03-23 14:42:34
 -- 服务器版本： 5.7.14
 -- PHP Version: 7.0.10
 
@@ -43,7 +43,8 @@ INSERT INTO `think_admin` (`id`, `name`, `username`, `password`, `root`) VALUES
 (4, '陈老师', 'admin1', '1234', 0),
 (6, '王老师', 'admin', '1234', 1),
 (7, '刘老师', '233', '233', 0),
-(233, '周老师', 'admin2', '77777', 0);
+(233, '周老师', 'admin2', '77777', 0),
+(235, '朱老师', 'admin5', '12345', 0);
 
 -- --------------------------------------------------------
 
@@ -178,12 +179,12 @@ CREATE TABLE `think_course` (
 
 INSERT INTO `think_course` (`courseId`, `courseName`, `classRangeId`, `adminId`, `time`, `peopleNumber`, `choiceNumber`) VALUES
 (184, '123334', '{"17": "高一（7）班", "18": "高一（8）班", "19": "高一（9）班", "25": "高二（5）班", "26": "高二（6）班", "31": "高三（1）班", "32": "高三（2）班", "33": "高三（3）班", "214": "高二（14）班"}', '刘老师', '', 0, 0),
-(460, '1414', '{"27": "高二（7）班"}', '王老师', '4', 14, 0),
+(460, '1414', '{"27": "高二（7）班"}', '王老师', '4', 14, 1),
 (447, '123', '{"25": "高二（5）班"}', '周老师', '23', 23, 0),
 (448, '234', '{"22": "高二（2）班"}', '吴老师', '123', 123, 0),
 (463, '51251', '{"17": "高一（7）班"}', '王老师', '515', 15, 0),
-(461, '14551', '{"27": "高二（7）班"}', '王老师', '14', 15, 0),
-(462, '14151', '{"27": "高二（7）班"}', '王老师', '515', 16, 0);
+(461, '14551', '{"27": "高二（7）班"}', '王老师', '14', 15, 1),
+(462, '14151', '{"27": "高二（7）班"}', '王老师', '515', 16, 1);
 
 -- --------------------------------------------------------
 
@@ -232,6 +233,9 @@ INSERT INTO `think_student_score` (`id`, `no`, `courseId`, `score`, `other_score
 (63, '123', 180, '0', '0', 1, '0'),
 (67, '1234', 180, '0', '{"考试成绩": "90"}', 1, '0'),
 (70, '123456', 449, '0', '{"平时成绩": "90"}', 1, '{"1": "60", "2": "40"}'),
+(148, '123457', 462, '0', '0', 1, '0'),
+(149, '123457', 461, '0', '0', 1, '0'),
+(150, '123457', 460, '0', '0', 1, '0'),
 (144, '123457', 449, '0', '{"平时成绩": "90"}', 1, '{"1": "60", "2": "40"}');
 
 -- --------------------------------------------------------
@@ -310,7 +314,7 @@ ALTER TABLE `think_stuinfo`
 -- 使用表AUTO_INCREMENT `think_admin`
 --
 ALTER TABLE `think_admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=235;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=236;
 --
 -- 使用表AUTO_INCREMENT `think_class`
 --
@@ -325,7 +329,7 @@ ALTER TABLE `think_course`
 -- 使用表AUTO_INCREMENT `think_student_score`
 --
 ALTER TABLE `think_student_score`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=145;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=151;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
