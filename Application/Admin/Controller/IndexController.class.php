@@ -176,6 +176,10 @@ class IndexController extends Controller {
         }elseif($swtich == "录入成绩"){
             $this->redirect('test_table', array('courseId' => $courseId));
         }
+        elseif($swtich == "录入成绩"){
+            $this->test_table($courseId);
+            exit();
+        }
 //        echo $courseId;
         if($data==1)
             $this -> success("删除成功!", "index");
@@ -249,13 +253,13 @@ class IndexController extends Controller {
         }
     }
     //添加管理员
-    public function addadmin($name=null,$username=null,$password=null,$root=null){
+    public function addadmin($name=null,$username=null,$password=null){
         $this->logincheck();
         $InsertAdmin = M("admin");
         $data['name'] = $name;
         $data['username'] = $username;
         $data['password'] = $password;
-        $data['root'] = $root;
+        $data['root'] = 0;
         if($data['username']!=null){
             $InsertAdmin->add($data);
             $this -> success("添加成功!", "adminadmin");
@@ -388,7 +392,7 @@ class IndexController extends Controller {
         session('php_html', $php_html);
         $php_html2=1;
         session('php_html2', $php_html2);
-        $this->display();
+        $this->display(test_table);
     }
 
     public function  test_android_get($content=null){
