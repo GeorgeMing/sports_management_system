@@ -39,6 +39,7 @@ class IndexController extends Controller
         $no = session('username');
         $password = session('password');
         $data = $stuinfo->select();
+
         if((int)date('m',time())==9&&$data[0]['semester']==2){//检测到仍处于第二学期,九月份提升一次年级
             for($i=0;$i<100;$i++){
                 $data[$i]['semester']=1;//进入下一年的第一学期
@@ -66,6 +67,7 @@ class IndexController extends Controller
                 $stuinfo->where("no='%s'", $data[$i]['no'])->save($data[$i]);
             }
         }
+
         $studata = $stuinfo->where("no='%s'", $no)->find();
         if ($studata) {
             if ($studata['no'] == $no && $studata['password'] == $password) {
@@ -85,7 +87,7 @@ class IndexController extends Controller
             $studata = $stuinfo->where("no='%s'", $no)->find();
             if ($studata) {
                 if ($studata['no'] == $no && $studata['password'] == $password) {
-                    session('no', $no);
+                    session('username', $no);
                     session('password', $password);
                     session('name', $studata['name']);
                     $this->success("登录成功!", "index");
