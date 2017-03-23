@@ -3,17 +3,22 @@ namespace Admin\Controller;
 use Think\Controller;
 class IndexController extends Controller {
     public function index(){
-        $this->logincheck();
+        $username = $this->logincheck();
         $this->assign('list', 'index');
         $this->assign('name', session('name'));
+        $scores = M();
+//        dump($username);
+        $sql = "select c.*,a.name
+                from think_admin a ,think_course c
+                where a.name = c.adminId and '".$username."'=a.username";
+        $data = $scores->query($sql);//查询当前登录学生所选的课程
 
-        $show = M("course");
-        $data = $show->select();
         for($j=0;$j<100;$j++){//注意这里仅仅是100,没有查表,反正可以自己break，尽量调大就好！！！
             $classes[$j] = json_decode($data[$j]['classrangeid'], true);//把json数据解析为array格式
             if($classes[$j]==null)//遍历到空串停止
                 break;
-            $temp[$j]="";//初始化
+
+            $temp[$j]="";//初始化数组用来连接字符串
             for($i=0;$i<100;$i++){
                 if(array_values($classes[$j])[$i]==null)//遍历到空串停止
                     break;
@@ -25,6 +30,10 @@ class IndexController extends Controller {
                 }
             }
         }
+//        dump($data);
+//        dump($classes);
+//        dump(json_encode($classes[0]));
+
         for($i=0;$i<100;$i++){
             if($temp[$i]==null)//遍历到空串停止
                 break;
@@ -59,7 +68,7 @@ class IndexController extends Controller {
         $admindata = $admininfo -> where("username='%s'", $username) -> find();
         if($admindata){
             if($admindata['username'] == $username && $admindata['password'] == $password){
-               return true;
+                return $username;
             }
         }
         $this->error("还未登陆", U('login'));
@@ -120,6 +129,7 @@ class IndexController extends Controller {
     /******************添加课程********************/
     //尚未检测主键是否会重复
     public function testInsertCourse($course = null,$teacher = null,$time = null,$people = null,$classes = null){
+        $this->logincheck();
         $InsertCourse = M("course");
         $arr=array(//定义编号和班级名称对于的json
                     "11" => "高一（1）班", "12" => "高一（2）班", "13" => "高一（3）班", "14" => "高一（4）班", "15" => "高一（5）班", "16" => "高一（6）班", "17" => "高一（7）班", "18" => "高一（8）班", "19" => "高一（9）班", "110" => "高一（10）班", "111" => "高一（11）班", "112" => "高一（12）班", "113" => "高一（13）班", "114" => "高一（14）班", "115" => "高一（15）班", "116" => "高一（16）班", "117" => "高一（17）班", "118" => "高一（18）班", "119" => "高一（19）班", "120" => "高一（20）班", "121" => "高一（21）班", "122" => "高一（22）班", "123" => "高一（23）班", "124" => "高一（24）班", "125" => "高一（25）班", "126" => "高一（26）班", "127" => "高一（27）班", "128" => "高一（28）班", "129" => "高一（29）班", "130" => "高一（30）班",
@@ -154,10 +164,15 @@ class IndexController extends Controller {
         }
     }
     /*********************删除课程*********************/
-    public function delCourse($cencel = null,$courseId = null){
+    public function delCourse($swtich = null,$courseId = null){
+        $this->logincheck();
         $del = M('course');
-        if($cencel == "取消课程"){
+        if($swtich == "取消课程"){
             $data = $del ->where("courseid='%s'",$courseId) ->delete(); // 成功返回1 失败返回0
+        }
+        elseif($swtich == "选课学生"){
+            $this->course_stu_list($courseId);
+            exit();
         }
 //        echo $courseId;
         if($data==1)
@@ -165,12 +180,16 @@ class IndexController extends Controller {
     }
     /********************成绩管理*********************/
     public function score(){
-    $this->logincheck();
-    $this->assign('list', 'score');
-    $this->assign('name', session('name'));
 
-        $show = M("course");
-        $data = $show->select();
+        $username = $this->logincheck();
+        $this->assign('list', 'score');
+        $this->assign('name', session('name'));
+
+        $scores = M();
+        $sql = "select c.*
+                from think_admin a ,think_course c
+                where a.name = c.adminId and '".$username."'=a.username";
+        $data = $scores->query($sql);//查询当前登录学生所选的课程
         for($j=0;$j<100;$j++){//注意这里仅仅是100,没有查表,反正可以自己break，尽量调大就好！！！
             $classes[$j] = json_decode($data[$j]['classrangeid'], true);//把json数据解析为array格式
             if($classes[$j]==null)//遍历到空串停止
@@ -214,24 +233,22 @@ class IndexController extends Controller {
     }
     /******************管理员管理********************/
     public function adminadmin($fileid = null, $filecomm = null){
-        $this->logincheck();
-        $this->assign('list', 'file');
-        $this->assign('name', session('name'));
-
-        $show = M("admin");
-        $data = $show->select();
-        $this->assign('data',$data);
-        $this->display();
-//        switch ($filecomm){
-//            case "download":break;
-//            case "upload":break;
-//            default:
-//                $this->display();
-//                break;
-//            }
+        $i=$this->logincheck();
+        if($i == "admin"){
+            $this->assign('list', 'adminadmin');
+            $this->assign('name', session('name'));
+            $show = M("admin");
+            $data = $show->select();
+            $this->assign('data',$data);
+            $this->display();
+        }
+        else{
+            $this -> error("权限不足!", "index");
+        }
     }
     //添加管理员
     public function addadmin($name=null,$username=null,$password=null,$root=null){
+        $this->logincheck();
         $InsertAdmin = M("admin");
         $data['name'] = $name;
         $data['username'] = $username;
@@ -245,6 +262,7 @@ class IndexController extends Controller {
     }
     //删除管理员
     public function deladmin($cencel = null,$id = null){
+        $this->logincheck();
         $del = M('admin');
         if($cencel == "删除"){
             $data = $del ->where("id='%s'",$id) ->delete(); // 成功返回1 失败返回0
@@ -252,9 +270,28 @@ class IndexController extends Controller {
         if($data==1)
             $this -> success("删除成功!", "adminadmin");
     }
+    public function course_stu_list($courseId = null){
 
-    public function course_stu_list(){
-        $this->display();
+        $this->logincheck();
+        $this->assign('list', 'score');
+        $this->assign('username', session('username'));
+        $scores = M();
+        $sql = "select b.no,b.name,b.sex,b.classId
+                from think_student_score a ,think_stuinfo b,think_course c
+                where a.courseId = c.courseId and a.no=b.no and '".$courseId."'=a.courseId";
+        $data = $scores->query($sql);//查询当前登录学生所选的课程
+//        session('response', sizeof($data));//放入session缓存中
+        for($i=0;$i<sizeof($data);$i++){
+            if($data[$i]['sex']==1){
+                $data[$i]['sex']="男";
+            }
+            elseif($data[$i]['sex']==0){
+                $data[$i]['sex']="女";
+            }
+        }
+//        dump($data);
+        $this->assign('data',$data);
+        $this->display(course_stu_list);
     }
     //文件下载
     private function fileDownload(){
@@ -264,25 +301,133 @@ class IndexController extends Controller {
     private function fileUpload(){
 
     }
-    public function  test_table_ajax($q){
-        $response = session('response');
+    public function  test_table_ajax_add($q){
+        $response = session('response');//将查询出来的条数从test_table函数里传回前端
         if($q){
             echo $response;
         }
+//        $scores = M();
+//        $sql = "ALTER TABLE think_student_score ADD '233' IndexControllerT(3) NOT NULL";
+//        $sql = "ALTER TABLE think_student_score ADD `233` INT(3) NOT NULL";
+//        $scores->execute($sql);//查询当前登录学生所选的课程
+////        ALTER TABLE `think_student_score`DROP `平时成绩`;
+//        dump($q);
     }
+    public function  test_table_ajax_del($scorename=null){
+        //查询数据库,根据将传进来的$scorename,删除other_score中带有$scorename,的一组即可
+        if($scorename){
+            $scorename = (string)$scorename;
+            $courseId = session('courseidToDel');//$courseId共享
+            $scores_back = M("student_score");
+            $data2 = $scores_back->where("courseId='%s'",$courseId)->select();
+
+            for($j=0;$j<100;$j++) {//注意这里仅仅是100,没有查表,反正可以自己break，尽量调大就好！！！
+                if ($data2[$j]['id'] == null)//遍历到空串停止
+                    break;
+                $stu_id[$j] = $data2[$j]['id'];
+                $arr = json_decode($data2[$j]['other_score'], true);
+                foreach ($arr as $k => $v) {
+                    //删除数组中特定的一行
+                    if ($k == $scorename) {
+                        unset($arr[$k]);
+                    }
+                }
+                $arr = json_encode($arr, JSON_UNESCAPED_UNICODE);
+                $data2[$j]['other_score'] = $arr;
+//        dump($data2[0]['other_score']);
+                $scores_back->where("courseId='%s' and id='%s'", $courseId, $stu_id[$j])->setField("other_score", $data2[$j]['other_score']);
+            }
+            echo "success";
+        }
+        else echo "fail";
+    }
+    //        暂时不需要返回数据,保留待扩展
+//        if($scorename){
+//            echo $courseId;
+//        }
+
+//        $scores = M();
+//        $sql = "ALTER TABLE think_student_score ADD '233' IndexControllerT(3) NOT NULL";
+//        $sql = "ALTER TABLE think_student_score ADD `233` INT(3) NOT NULL";
+//        $scores->execute($sql);//查询当前登录学生所选的课程
+////        ALTER TABLE `think_student_score`DROP `平时成绩`;
+//        dump($q);
 
     public function test_table($courseId = null){
         $this->logincheck();
+        session('courseidToDel', $courseId);
         $this->assign('list', 'score');
         $this->assign('username', session('username'));
         $scores = M();
-        $sql = "select c.courseName,a.no,b.name,b.sex,a.score
+        $sql = "select c.courseName,a.no,b.name,b.sex,a.score,a.other_score,a.score_proportion
                 from think_student_score a ,think_stuinfo b,think_course c
                 where a.courseId = c.courseId and a.no=b.no and '".$courseId."'=a.courseId";
         $data = $scores->query($sql);//查询当前登录学生所选的课程
         session('response', sizeof($data));//放入session缓存中
+//        dump($data);
+//        构建四样东西给前端,成绩名称,分数,删除按钮,成绩比例
+        //首先是构建成绩名称和分数
+        $score_score = array();
+        $score_proportion = array();
+        for($j=0;$j<100;$j++){//注意这里仅仅是100,没有查表,反正可以自己break，尽量调大就好！！！
+            if(array_values(json_decode($data[$j]['other_score'], true))==null)//遍历到空串停止
+                break;
+            $scoreName_front[$j] = json_decode($data[$j]['other_score'],true);
+            $scoreName[$j] = array_values(json_decode($data[$j]['other_score'], true));//把json数据解析为array格式
+            $score_score = array_merge($score_score, array_values($scoreName[$j]));//把二维变一维
+            $score_proportion[$j] = json_decode($data[$j]['score_proportion'],true);//把json数据解析为array格式
+        }
+        session('score_score', $score_score);
         $this->assign('data',$data);
+        $this->assign('score_proportion',$score_proportion[0]);
+        $this->assign('scoreName',$scoreName_front[0]);//打印此数组的key即可打印成绩名称
+//        dump($scoreName_front);
+        $php_html=0;//初始化迭代器
+        session('php_html', $php_html);
+        $php_html2=1;
+        session('php_html2', $php_html2);
         $this->display();
+    }
+
+    public function  test_android_get($content=null){
+        echo base64_decode($content);
+    }
+
+    public function  test_android_get_registered($account=null,$password=null,$problem=null,$answer=null){//注册
+        $data['account'] = base64_decode($account);
+        $data['password'] = base64_decode($password);
+        $data['problem'] = base64_decode($problem);
+        $data['answer'] = base64_decode($answer);
+        if($data['account']!=null&&$data['password']!=null&&$data['problem']!=null&&$data['answer']!=null){
+            $registered = M("android_test");
+            $registered->add($data);
+            echo "success";
+        }
+        else{
+            echo "fail";
+        }
+    }
+    public function  test_android_get_login($account=null,$password=null){//登录
+        $data['account'] = base64_decode($account);
+        $data['password'] = base64_decode($password);
+        if($data['account']!=null&&$data['password']!=null){
+            $login = M("android_test");
+            $result = $login -> where("account='%s'", $data['account']) -> find();
+            if($result){
+                if($result['account'] == $data['account'] && $result['password'] == $data['password']){
+                    echo "success";
+                }
+                else{
+                    echo "fail error";
+                }
+            }
+            else{
+                echo "result null";
+            }
+        }
+        else{
+            echo "a p fail null";
+        }
     }
 }
 ?>
