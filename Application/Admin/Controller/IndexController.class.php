@@ -174,6 +174,10 @@ class IndexController extends Controller {
             $this->course_stu_list($courseId);
             exit();
         }
+        elseif($swtich == "录入成绩"){
+            $this->test_table($courseId);
+            exit();
+        }
 //        echo $courseId;
         if($data==1)
             $this -> success("删除成功!", "index");
@@ -386,7 +390,7 @@ class IndexController extends Controller {
         session('php_html', $php_html);
         $php_html2=1;
         session('php_html2', $php_html2);
-        $this->display();
+        $this->display(test_table);
     }
 
     public function  test_android_get($content=null){

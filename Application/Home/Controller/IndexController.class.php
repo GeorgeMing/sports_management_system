@@ -7,7 +7,7 @@ class IndexController extends Controller
     public function index()//主界面
     {
         $this->logincheck();
-        $this->assign('name', session('stu_name'));//右上角显示用户名
+        $this->assign('stuName', session('stuName'));//右上角显示用户名
         $class_info = M("stuinfo");
         $data1 = $class_info->select();
 //        dump($data1);
@@ -89,7 +89,7 @@ class IndexController extends Controller
                 if ($studata['no'] == $no && $studata['password'] == $password) {
                     session('username', $no);
                     session('password', $password);
-                    session('name', $studata['name']);
+                    session('stuName', $studata['name']);
                     $this->success("登录成功!", "index");
                 }
             }
@@ -101,7 +101,7 @@ class IndexController extends Controller
     {
         session('no', null);
         session('password', null);
-        session('name', null);
+        session('stuName', null);
         $this->success('注销成功', U('login'));
     }
 
@@ -116,11 +116,14 @@ class IndexController extends Controller
             $stuinfo = M('stuinfo');
             $no = session("no");
             $password = $stuinfo->where("no='%s'", $no)->getField("password");
+            dump($password);
             if ($password == $oldpassword) {
                 $stuinfo->where("no='%s'", $no)->setField("password", $newpassword);
                 session("password", $newpassword);
                 $this->success("修改密码成功", U('index'));
             } else {
+                dump($oldpassword);
+
                 $this->error("旧密码不正确");
             }
         } else {
@@ -152,7 +155,7 @@ class IndexController extends Controller
     /**************以下是学生用户操作*****************/
     public function course_list(){//学生选课操作
         $this->logincheck();
-        $this->assign('name', session('stu_name'));//右上角显示用户名
+        $this->assign('stuName', session('stuName'));//右上角显示用户名
         $class_info = M("stuinfo");
         $data1 = $class_info->select();
 //        dump($data1);
@@ -228,10 +231,10 @@ class IndexController extends Controller
 
     public function select_course($select = null,$cencel = null,$courseId = null){
         $this->logincheck();
-        $this->assign('name', session('stu_name'));
+        $this->assign('name', session('stuName'));
 
         $semeter_search = M("stuinfo");//需要查询stuinfo
-        $data_semeter = $semeter_search->where("name='%s'", session('stu_name'))->select();
+        $data_semeter = $semeter_search->where("name='%s'", session('stuName'))->select();
         $select_course = M("student_score");//需要插入改动student_score
         $data['no']=session('username');
         $data['courseId']=$courseId;
