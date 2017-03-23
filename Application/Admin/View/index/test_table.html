@@ -29,9 +29,7 @@
             var index=document.getElementById(String(obj_p.getAttribute("id"))).cellIndex;//算出这个单元格在这一行上的位置
             var str = table233.rows[0].cells[index].innerHTML;//获得表头
             index=index+1;
-            alert(str);
             str = str + "";
-            alert(str);
             $("#table233 thead tr th::nth-child("+index+")").remove();//删除表头
             $("#table233 tbody tr td::nth-child("+index+")").remove();//删除表格数据
             num--;

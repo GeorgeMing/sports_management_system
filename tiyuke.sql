@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 2017-03-23 07:51:08
+-- Generation Time: 2017-03-23 10:06:27
 -- 服务器版本： 5.7.14
--- PHP Version: 5.6.25
+-- PHP Version: 7.0.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -180,7 +180,7 @@ INSERT INTO `think_course` (`courseId`, `courseName`, `classRangeId`, `adminId`,
 (184, '123334', '{"17": "高一（7）班", "18": "高一（8）班", "19": "高一（9）班", "25": "高二（5）班", "26": "高二（6）班", "31": "高三（1）班", "32": "高三（2）班", "33": "高三（3）班", "214": "高二（14）班"}', '刘老师', '', 0, 0),
 (447, '123', '{"25": "高二（5）班"}', '周老师', '23', 23, 0),
 (448, '234', '{"22": "高二（2）班"}', '吴老师', '123', 123, 0),
-(449, '足球', '{"17": "高一（7）班", "27": "高二（7）班", "222": "高二（22）班"}', '王老师', '周三八九节', 5, 0);
+(449, '足球', '{"17": "高一（7）班", "27": "高二（7）班", "222": "高二（22）班"}', '王老师', '周三八九节', 5, 1);
 
 -- --------------------------------------------------------
 
@@ -228,7 +228,8 @@ INSERT INTO `think_student_score` (`id`, `no`, `courseId`, `score`, `other_score
 (23, '123457', 179, '41', '0', 1, '0'),
 (63, '123', 180, '0', '0', 1, '0'),
 (67, '1234', 180, '0', '{"考试成绩": "90"}', 1, '0'),
-(70, '123456', 449, '0', '{"平时成绩": "90", "考试成绩": "90"}', 1, '{"1": "60", "2": "40"}');
+(70, '123456', 449, '0', '{"平时成绩": "90", "考试成绩": "90"}', 1, '{"1": "60", "2": "40"}'),
+(144, '123457', 449, '0', '0', 1, '0');
 
 -- --------------------------------------------------------
 
@@ -316,12 +317,12 @@ ALTER TABLE `think_class`
 -- 使用表AUTO_INCREMENT `think_course`
 --
 ALTER TABLE `think_course`
-  MODIFY `courseId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=450;
+  MODIFY `courseId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=456;
 --
 -- 使用表AUTO_INCREMENT `think_student_score`
 --
 ALTER TABLE `think_student_score`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=145;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
