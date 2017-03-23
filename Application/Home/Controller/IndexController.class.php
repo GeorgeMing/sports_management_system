@@ -12,7 +12,7 @@ class IndexController extends Controller
         $data1 = $class_info->select();
 //        dump($data1);
         for($i=0;$i<100;$i++){
-            if($data1[$i]['no'] == session('no')){
+            if($data1[$i]['no'] == session('username')){
                 if (strlen($data1[$i]['classid']) == 2) {
                     $temp_grade = (int)substr($data1[$i]['classid'], 0, 1);
                     $temp_class = substr($data1[$i]['classid'], 1, 1);
@@ -36,7 +36,7 @@ class IndexController extends Controller
     {
         $data = null;
         $stuinfo = M("stuinfo");
-        $no = session('no');
+        $no = session('username');
         $password = session('password');
         $data = $stuinfo->select();
         if((int)date('m',time())==9&&$data[0]['semester']==2){//检测到仍处于第二学期,九月份提升一次年级
@@ -155,7 +155,7 @@ class IndexController extends Controller
         $data1 = $class_info->select();
 //        dump($data1);
         for($i=0;$i<100;$i++){
-            if($data1[$i]['no'] == session('no')){
+            if($data1[$i]['no'] == session('username')){
                 if (strlen($data1[$i]['classid']) == 2) {
                     $temp_grade = (int)substr($data1[$i]['classid'], 0, 1);
                     $temp_class = substr($data1[$i]['classid'], 1, 1);
@@ -170,7 +170,7 @@ class IndexController extends Controller
         $this->assign('class_grade', $class_grade);
 
 
-        $no = session('no');
+        $no = session('username');
 //        dump($no);
         $show2 = M();
         $sql = "select a.courseName,a.adminId,a.courseId from think_course a,think_student_score b where a.courseId = b.courseId and b.no='".$no."'";
@@ -231,7 +231,7 @@ class IndexController extends Controller
         $semeter_search = M("stuinfo");//需要查询stuinfo
         $data_semeter = $semeter_search->where("name='%s'", session('stu_name'))->select();
         $select_course = M("student_score");//需要插入改动student_score
-        $data['no']=session('no');
+        $data['no']=session('username');
         $data['courseId']=$courseId;
         $data['score']=0;
         $data['other_score']=0;
