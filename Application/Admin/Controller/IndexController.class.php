@@ -30,7 +30,7 @@ class IndexController extends Controller {
                 }
             }
         }
-        dump($data);
+//        dump($data);
 //        dump($classes);
 //        dump(json_encode($classes[0]));
 

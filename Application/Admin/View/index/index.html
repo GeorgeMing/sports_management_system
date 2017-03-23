@@ -26,7 +26,7 @@
                                 <volist name="data" id="qwe">
                                     <form action="__URL__/delCourse" method="post">
                                         <tr>
-                                            <td><input name="courseId" value="{$qwe[courseid]}" readonly="true"/></td>
+                                            <td><input name="courseId" value="{$qwe[courseid]}" readonly="true" type="hidden"/>{$qwe[courseid]}</td>
                                             <td>{$qwe[coursename]}</td>
                                             <td>{$qwe[adminid]}</td>
                                             <td>{$qwe[cla]}</td>
