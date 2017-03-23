@@ -1,55 +1,42 @@
-<html>
-<head>
-    <script type="text/javascript">
-        var size = 0;
-        function showHint()
-        {
-            var str = "a";
-            var url="__URL__/test_ajax";//¶¨ÒåÒª·¢ËÍµ½·şÎñÆ÷µÄ URL£¨ÎÄ¼şÃû£©
-            url=url+"?q="+str;//°Ñ´øÓĞÊäÈëÓòÄÚÈİµÄ²ÎÊı (q) Ìí¼Óµ½Õâ¸ö URL
-            url=url+"&sid="+Math.random();//Ìí¼ÓÒ»¸öËæ»úÊı£¬ÒÔ·À·şÎñÆ÷Ê¹ÓÃ»º´æÎÄ¼ş
-            xmlHttp=GetXmlHttpObject();//µ÷ÓÃ GetXmlHttpObject º¯ÊıÀ´´´½¨ XMLHTTP ¶ÔÏó
-            xmlHttp.onreadystatechange=stateChanged;//ÔÚÊÂ¼ş±»´¥·¢Ê±¸æÖª¸Ã¶ÔÏóÖ´ĞĞÃûÎª stateChanged µÄº¯Êı
-            xmlHttp.open("GET",url,true);//ÓÃ¸ø¶¨µÄ URL À´´ò¿ª´ò¿ªÕâ¸ö XMLHTTP ¶ÔÏó
-            xmlHttp.send(null);//Ïò·şÎñÆ÷·¢ËÍ HTTP ÇëÇó :´ËÊ±µ÷µ½stateChangedº¯ÊıÖ´ĞĞ
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+    <TITLE> New Document </TITLE>
+    <META NAME="Generator" CONTENT="EditPlus">
+    <META NAME="Author" CONTENT="">
+    <META NAME="Keywords" CONTENT="">
+    <META NAME="Description" CONTENT="">
+</HEAD>
+
+<BODY>
+<TABLE width="100%" border="1" id = "tb">
+    <TR>
+        <TD><INPUT TYPE="text" NAME="a1" value="å¼ ä¸‰"></TD>
+        <TD><font color="red">ç”·</font></TD>
+        <TD>21</TD>
+    </TR>
+    <TR>
+        <TD><INPUT TYPE="text" NAME="a2" value="æå››"></TD>
+        <TD><font color="red">å¥³</font></TD>
+        <TD>19</TD>
+    </TR>
+</TABLE>
+<SCRIPT LANGUAGE="JavaScript">
+    <!--
+    getValue();
+    function getValue()
+    {
+        alert("è¡¨æ ¼æ€»è¡Œæ•°="+tb.rows.length);
+        for( i = 0 ; i < tb.rows.length ; i ++){
+            Names = tb.rows[i].cells[0].getElementsByTagName("INPUT")[0].value;
+            gender = tb.rows[i].cells[1].innerHTML;
+            age   = tb.rows[i].cells[2].innerText;
+            alert(Names);
+            alert(gender);
+            alert(age);
         }
-
-        function stateChanged()//×´Ì¬±ä³É 4 £¨»ò "complete"£©Ê±,ÓÃÏìÓ¦ÎÄ±¾Ìî³ä txtHint Õ¼Î»·û txtHint µÄÄÚÈİ
-        {
-            if (xmlHttp.readyState==4 || xmlHttp.readyState=="complete") {
-                document.getElementById("txtHint").innerHTML=xmlHttp.responseText;
-                size = xmlHttp.responseText;
-//                alert(size);
-            }
-        }
-
-        function GetXmlHttpObject()//ÊÇ½â¾öÎª²»Í¬ä¯ÀÀÆ÷´´½¨²»Í¬ XMLHTTP ¶ÔÏóµÄÎÊÌâ
-        {
-            var xmlHttp=null;
-            try {
-                xmlHttp=new XMLHttpRequest();
-            }
-            catch (e) {
-                try {
-                    xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
-                }
-                catch (e) {
-                    xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
-                }
-            }
-            return xmlHttp;
-        }
-    </script>
-</head>
-
-<body>
-
-<form>
-    First Name:
-    <input type="button" id="txt1" onclick="showHint()">
-</form>
-
-<p>Suggestions: <span id='txtHint'></span> </p>
-
-</body>
-</html>
+    }
+    //-->
+</SCRIPT>
+</BODY>
+</HTML>

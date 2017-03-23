@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 2017-03-16 13:55:00
+-- Generation Time: 2017-03-23 07:51:08
 -- 服务器版本： 5.7.14
 -- PHP Version: 5.6.25
 
@@ -31,7 +31,7 @@ CREATE TABLE `think_admin` (
   `name` varchar(5) NOT NULL,
   `username` varchar(10) NOT NULL,
   `password` varchar(25) NOT NULL,
-  `root` tinyint(1) NOT NULL
+  `root` tinyint(1) NOT NULL COMMENT '超级管理员为1'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
@@ -39,11 +39,31 @@ CREATE TABLE `think_admin` (
 --
 
 INSERT INTO `think_admin` (`id`, `name`, `username`, `password`, `root`) VALUES
-(8, '11', '11', '11', 11),
-(4, '陈老师', 'admin1', '1234', 1),
+(234, '吴老师', 'admin3', '1234', 0),
+(4, '陈老师', 'admin1', '1234', 0),
 (6, '王老师', 'admin', '1234', 1),
-(7, '233', '233', '233', 2),
-(233, '周老师', 'admin2', '77777', 2);
+(7, '刘老师', '233', '233', 0),
+(233, '周老师', 'admin2', '77777', 0);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `think_android_test`
+--
+
+CREATE TABLE `think_android_test` (
+  `account` varchar(16) NOT NULL,
+  `password` varchar(16) NOT NULL,
+  `problem` varchar(30) NOT NULL,
+  `answer` varchar(30) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- 转存表中的数据 `think_android_test`
+--
+
+INSERT INTO `think_android_test` (`account`, `password`, `problem`, `answer`) VALUES
+('123', '123', '123', '123');
 
 -- --------------------------------------------------------
 
@@ -88,53 +108,53 @@ INSERT INTO `think_class` (`id`, `classId`, `grade`, `classNo`) VALUES
 (23, 123, 1, 23),
 (24, 124, 1, 24),
 (25, 21, 2, 1),
-(26, 0, 2, 2),
-(27, 0, 2, 3),
-(28, 0, 2, 4),
-(29, 0, 2, 5),
-(30, 0, 2, 6),
-(31, 0, 2, 7),
-(32, 0, 2, 8),
-(33, 0, 2, 9),
-(34, 0, 2, 10),
-(35, 0, 2, 11),
-(36, 0, 2, 12),
-(37, 0, 2, 13),
-(38, 0, 2, 14),
-(39, 0, 2, 15),
-(40, 0, 2, 16),
-(41, 0, 2, 17),
-(42, 0, 2, 18),
-(43, 0, 2, 19),
-(44, 0, 2, 20),
-(45, 0, 2, 21),
-(46, 0, 2, 22),
-(47, 0, 2, 23),
-(48, 0, 2, 24),
-(49, 0, 3, 1),
-(50, 0, 3, 2),
-(51, 0, 3, 3),
-(52, 0, 3, 4),
-(53, 0, 3, 5),
-(54, 0, 3, 6),
-(55, 0, 3, 7),
-(56, 0, 3, 8),
-(57, 0, 3, 9),
-(58, 0, 3, 10),
-(59, 0, 3, 11),
-(60, 0, 3, 12),
-(61, 0, 3, 13),
-(62, 0, 3, 14),
-(63, 0, 3, 15),
-(64, 0, 3, 16),
-(65, 0, 3, 17),
-(66, 0, 3, 18),
-(67, 0, 3, 19),
-(68, 0, 3, 20),
-(69, 0, 3, 21),
-(70, 0, 3, 22),
-(71, 0, 3, 23),
-(72, 0, 3, 24);
+(72, 324, 3, 24),
+(71, 323, 3, 23),
+(70, 322, 3, 22),
+(69, 321, 3, 21),
+(68, 320, 3, 20),
+(67, 319, 3, 19),
+(66, 318, 3, 18),
+(65, 317, 3, 17),
+(64, 316, 3, 16),
+(63, 315, 3, 15),
+(62, 314, 3, 14),
+(61, 313, 3, 13),
+(60, 312, 3, 12),
+(59, 311, 3, 11),
+(58, 310, 3, 10),
+(57, 39, 3, 9),
+(56, 38, 3, 8),
+(55, 37, 3, 7),
+(54, 36, 3, 6),
+(53, 35, 3, 5),
+(52, 34, 3, 4),
+(51, 33, 3, 3),
+(50, 32, 3, 2),
+(49, 31, 3, 1),
+(26, 22, 2, 2),
+(27, 23, 2, 3),
+(28, 24, 2, 4),
+(29, 25, 2, 5),
+(30, 26, 2, 6),
+(31, 27, 2, 7),
+(32, 28, 2, 8),
+(33, 29, 2, 9),
+(34, 210, 2, 10),
+(35, 211, 2, 11),
+(36, 212, 2, 12),
+(37, 213, 2, 13),
+(38, 214, 2, 14),
+(39, 215, 2, 15),
+(40, 216, 2, 16),
+(41, 217, 2, 17),
+(42, 218, 2, 18),
+(43, 219, 2, 19),
+(44, 220, 2, 20),
+(45, 221, 2, 21),
+(46, 222, 2, 22),
+(47, 223, 2, 23),
+(48, 224, 2, 24);
 
 -- --------------------------------------------------------
 
@@ -157,8 +177,10 @@ CREATE TABLE `think_course` (
 --
 
 INSERT INTO `think_course` (`courseId`, `courseName`, `classRangeId`, `adminId`, `time`, `peopleNumber`, `choiceNumber`) VALUES
-(184, '123334', '{"17": "高一（7）班", "18": "高一（8）班", "19": "高一（9）班", "25": "高二（5）班", "26": "高二（6）班", "31": "高三（1）班", "32": "高三（2）班", "33": "高三（3）班", "214": "高二（14）班"}', '123', '', 0, 0),
-(180, '1231233', '{"17": "高一（7）班", "18": "高一（8）班", "19": "高一（9）班"}', '1', '1', 1, 0);
+(184, '123334', '{"17": "高一（7）班", "18": "高一（8）班", "19": "高一（9）班", "25": "高二（5）班", "26": "高二（6）班", "31": "高三（1）班", "32": "高三（2）班", "33": "高三（3）班", "214": "高二（14）班"}', '刘老师', '', 0, 0),
+(447, '123', '{"25": "高二（5）班"}', '周老师', '23', 23, 0),
+(448, '234', '{"22": "高二（2）班"}', '吴老师', '123', 123, 0),
+(449, '足球', '{"17": "高一（7）班", "27": "高二（7）班", "222": "高二（22）班"}', '王老师', '周三八九节', 5, 0);
 
 -- --------------------------------------------------------
 
@@ -190,22 +212,23 @@ CREATE TABLE `think_student_score` (
   `no` varchar(12) NOT NULL,
   `courseId` int(11) NOT NULL,
   `score` json NOT NULL,
-  `other_score` int(11) NOT NULL
+  `other_score` json NOT NULL,
+  `semester` int(1) NOT NULL COMMENT '1是上学期2是下学期',
+  `score_proportion` json NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- 转存表中的数据 `think_student_score`
 --
 
-INSERT INTO `think_student_score` (`id`, `no`, `courseId`, `score`, `other_score`) VALUES
-(5, '123456', 175, '0', 0),
-(6, '123', 174, '0', 0),
-(25, '123456', 179, '0', 0),
-(23, '123457', 179, '0', 0),
-(26, '1234', 180, '0', 0),
-(27, '123', 180, '0', 0),
-(28, '123457', 180, '0', 0),
-(30, '123456', 180, '0', 0);
+INSERT INTO `think_student_score` (`id`, `no`, `courseId`, `score`, `other_score`, `semester`, `score_proportion`) VALUES
+(5, '123456', 175, '12', '0', 1, '0'),
+(6, '123', 174, '12', '0', 1, '0'),
+(25, '123456', 179, '23', '0', 1, '0'),
+(23, '123457', 179, '41', '0', 1, '0'),
+(63, '123', 180, '0', '0', 1, '0'),
+(67, '1234', 180, '0', '{"考试成绩": "90"}', 1, '0'),
+(70, '123456', 449, '0', '{"平时成绩": "90", "考试成绩": "90"}', 1, '{"1": "60", "2": "40"}');
 
 -- --------------------------------------------------------
 
@@ -218,18 +241,21 @@ CREATE TABLE `think_stuinfo` (
   `password` varchar(20) NOT NULL,
   `name` varchar(5) NOT NULL,
   `sex` tinyint(1) NOT NULL,
-  `classId` int(11) NOT NULL
+  `classId` int(11) NOT NULL,
+  `semester` int(1) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- 转存表中的数据 `think_stuinfo`
 --
 
-INSERT INTO `think_stuinfo` (`no`, `password`, `name`, `sex`, `classId`) VALUES
-('123456', '1234', '张三', 1, 19),
-('123457', '123', '小红', 0, 17),
-('123', '1234', '123', 1, 18),
-('1234', '1234', '12', 1, 18);
+INSERT INTO `think_stuinfo` (`no`, `password`, `name`, `sex`, `classId`, `semester`) VALUES
+('123456', '1234', '张三', 1, 27, 1),
+('123457', '123', '小红', 0, 27, 1),
+('123', '1234', '小军', 1, 32, 1),
+('1234', '1234', '宝宝', 1, 222, 2),
+('140201011022', '1234', '小治', 1, 171, 1),
+('140201011031', '123', '小明', 1, 173, 1);
 
 --
 -- Indexes for dumped tables
@@ -241,6 +267,12 @@ INSERT INTO `think_stuinfo` (`no`, `password`, `name`, `sex`, `classId`) VALUES
 ALTER TABLE `think_admin`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `username` (`username`);
+
+--
+-- Indexes for table `think_android_test`
+--
+ALTER TABLE `think_android_test`
+  ADD PRIMARY KEY (`account`);
 
 --
 -- Indexes for table `think_class`
@@ -274,22 +306,22 @@ ALTER TABLE `think_stuinfo`
 -- 使用表AUTO_INCREMENT `think_admin`
 --
 ALTER TABLE `think_admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=234;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=235;
 --
 -- 使用表AUTO_INCREMENT `think_class`
 --
 ALTER TABLE `think_class`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=121;
 --
 -- 使用表AUTO_INCREMENT `think_course`
 --
 ALTER TABLE `think_course`
-  MODIFY `courseId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=185;
+  MODIFY `courseId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=450;
 --
 -- 使用表AUTO_INCREMENT `think_student_score`
 --
 ALTER TABLE `think_student_score`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

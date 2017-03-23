@@ -1,5 +1,6 @@
 <?php
 namespace Home\Controller;
+use Org\Util\String;
 use Think\Controller;
 class IndexController extends Controller
 {
@@ -18,13 +19,42 @@ class IndexController extends Controller
 
     public function logincheck()//登录检查
     {
+        $data = null;
         $stuinfo = M("stuinfo");
         $no = session('no');
         $password = session('password');
+        $data = $stuinfo->select();
+        if((int)date('m',time())==9&&$data[0]['semester']==2){//检测到仍处于第二学期,九月份提升一次年级
+            for($i=0;$i<100;$i++){
+                $data[$i]['semester']=1;//进入下一年的第一学期
+                if(strlen($data[$i]['classid'])==2){
+                    $temp_grade =(int)substr($data[$i]['classid'], 0,1);
+                    if($temp_grade==3) $temp_grade=(int)date('y',time());//毕业的学生就记录毕业的年份
+                    else $temp_grade++;
+//                    dump($temp_grade);
+                    $temp_class =substr($data[$i]['classid'], 1,1);
+                    $data[$i]['classId'] = (String)$temp_grade."".$temp_class;
+//                    dump($data_update['classId']);
+                    $stuinfo->where("no='%s'", $data[$i]['no'])->save($data[$i]);
+                }
+                elseif(strlen($data[$i]['classid'])==3){
+                    $temp_grade =(int)substr($data[$i]['classid'], 0,1);
+                    $temp_grade++;
+                    $temp_class =substr($data[$i]['classid'], 1,2);
+                    $data[$i]['classid'] = (String)$temp_grade."".$temp_class;
+                }
+            }
+        }
+        if((int)date('m',time())==2&&$data[0]['semester']==1){//如果二月份还在第一学期,则提升一次学期
+            for($i=0;$i<100;$i++){
+                $data[$i]['semester']=2;//进入第二学期
+                $stuinfo->where("no='%s'", $data[$i]['no'])->save($data[$i]);
+            }
+        }
         $studata = $stuinfo->where("no='%s'", $no)->find();
         if ($studata) {
             if ($studata['no'] == $no && $studata['password'] == $password) {
-                return true;
+                return $no;
             }
         }
         $this->error("还未登陆", U('login'));
@@ -107,12 +137,12 @@ class IndexController extends Controller
         $this->logincheck();
         $this->assign('name', session('name'));//右上角显示用户名
         $no = session('no');
-        dump($no);
+//        dump($no);
         $show2 = M();
         $sql = "select a.courseName,a.adminId,a.courseId from think_course a,think_student_score b where a.courseId = b.courseId and b.no='".$no."'";
         $data2 = $show2->query($sql);//查询当前登录学生所选的课程
         $this->assign('data2',$data2);
-        dump($data2);
+//        dump($data2);
         $stu = M("stuinfo");
         $stu_info = $stu->where("no='%s'", $no)->select();//从学生表中提取班级编号
         //dump($stu_info[0]['classid']);//班级编号
@@ -173,21 +203,45 @@ class IndexController extends Controller
 
     public function select_course($select = null,$cencel = null,$courseId = null){
         $this->logincheck();
-        $select_course = M("student_score");
+        $this->assign('name', session('name'));
+        $change_choicenumber = null;
+
+        $semeter_search = M("stuinfo");//需要查询stuinfo
+        $data_semeter = $semeter_search->where("name='%s'", session('name'))->select();
+        $select_course = M("student_score");//需要插入改动student_score
         $data['no']=session('no');
         $data['courseId']=$courseId;
         $data['score']=0;
         $data['other_score']=0;
+        $data['semester']=$data_semeter[0]['semester'];
+        $data['score_proportion'] = 0;
+
         if($select == "选课"){
-            $select_course->add($data);
+            $change_choicenumber = M("course");//需要更新改动course
+            $data2=$change_choicenumber->where("courseId='%s'",$courseId)->select();
+            if((int)$data2[0]['choicenumber']>=(int)$data2[0]['peoplenumber']){
+                $this->error("课程容量已满","course_list");
+                return ;
+            }
+            $select_course->add($data);//插入
+
+            $data2[0]['choicenumber'] = (int)$data2[0]['choicenumber']-1;
+            $change_choicenumber->where("courseId='%s'",$courseId)->save($data2);
             $this -> success("选课成功!", "course_list");
         }
         elseif($cencel == "取消"){
             $select_course ->where("courseid='%s' and no='%s'",$courseId,$data['no']) ->delete();
+            $change_choicenumber = M("course");
+            $data2=$change_choicenumber->where("courseId='%s'",$courseId)->select();
+            dump($data2);
+            $data2[0]['choicenumber'] = (int)$data2[0]['choicenumber']+1;
+            dump($data2);
+            $change_choicenumber->where("courseId='%s'",$courseId)->save($data2);
             $this -> success("取消选课!", "course_list");
         }
-        else{
-
-        }
     }
+    public function test(){
+        echo date('m',time());
+    }
+
 }
