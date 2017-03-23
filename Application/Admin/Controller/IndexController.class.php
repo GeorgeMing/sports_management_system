@@ -173,6 +173,8 @@ class IndexController extends Controller {
         elseif($swtich == "选课学生"){
             $this->course_stu_list($courseId);
             exit();
+        }elseif($swtich == "录入成绩"){
+            $this->redirect('test_table', array('courseId' => $courseId));
         }
 //        echo $courseId;
         if($data==1)

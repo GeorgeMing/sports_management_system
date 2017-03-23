@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <!-- PAGE CONTENT BEGINS -->
-                <div class="container">
+                <div >
                     <h4>已开设课程</h4>
                     <div class="col-xs-12">
                         <div class="table-responsive">
@@ -15,7 +15,7 @@
                                     <th>课程编号</th>
                                     <th>课程</th>
                                     <th>任课老师</th>
-                                    <th>开课班级</th>
+                                    <th class="col-xs-4">开课班级</th>
                                     <th>上课时间</th>
                                     <th>课程人数</th>
                                     <th>已选人数</th>
@@ -26,7 +26,7 @@
                                 <volist name="data" id="qwe">
                                     <form action="__URL__/delCourse" method="post">
                                         <tr>
-                                            <td><input name="courseId" value="{$qwe[courseid]}" readonly="true"/></td>
+                                            <td><input name="courseId" value="{$qwe[courseid]}" readonly="true" type="hidden"/>{$qwe[courseid]}</td>
                                             <td>{$qwe[coursename]}</td>
                                             <td>{$qwe[adminid]}</td>
                                             <td>{$qwe[cla]}</td>
@@ -34,8 +34,9 @@
                                             <td>{$qwe[peoplenumber]}</td>
                                             <td>{$qwe[choicenumber]}</td>
                                             <td width="20%">
-                                                <input name="swtich" type="submit" class="btn btn-warning" value="取消课程"/>
+                                                <input name="swtich" type="submit" class="btn btn-danger" value="取消课程"/>
                                                 <input name="swtich" type="submit" class="btn btn-success" value="选课学生"/>
+                                                <input name="swtich" type="submit" class="btn btn-warning" value="录入成绩"/>
                                                 <!--<button class="btn btn-success"><a href="__URL__/course_stu_list">选课学生</a></button>-->
                                                 <!--<a href="__URL__/course_stu_list"><i class="btn btn-success">选课学生</i></a>-->
                                             </td>
