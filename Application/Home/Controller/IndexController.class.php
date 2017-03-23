@@ -1,6 +1,5 @@
 <?php
 namespace Home\Controller;
-use Org\Util\String;
 use Think\Controller;
 class IndexController extends Controller
 {
@@ -9,8 +8,18 @@ class IndexController extends Controller
     {
         $this->logincheck();
         $this->assign('name', session('name'));//右上角显示用户名
-
-
+        $class_info = M("stuinfo");
+        $data1 = $class_info->select();
+        dump($data1);
+        if (strlen($data1[0]['classid']) == 2) {
+            $temp_grade = (int)substr($data1[0]['classid'], 0, 1);
+            $temp_class = substr($data1[0]['classid'], 1, 1);
+        } elseif (strlen($data1[0]['classid']) == 3) {
+            $temp_grade = (int)substr($data1[0]['classid'], 0, 1);
+            $temp_class = substr($data1[0]['classid'], 1, 2);
+        }
+        $class_grade = "高".$temp_grade."(".$temp_class.")"."班";
+        $this->assign('class_grade', $class_grade);
         $this->display();
 //        SELECT grade,classNo
 //FROM think_class ,think_stuinfo
@@ -161,14 +170,6 @@ class IndexController extends Controller
                 $temp[$j][$i] = array_keys($classes[$j])[$i]; //将班级编号赋值
             }
         }
-//        dump($temp);
-//        for($k=0,$j=$data1[$k]['courseid'];$j<1000,$k<1000;$j++,$k++) {//将数组的编号跟课程编号同步,方便对比时的提取
-//            if($data1[$k]['courseid']==null)
-//                break;
-//            $temp[$j]=$temp[$k];
-//            unset($temp[$k]);//直接删除原来的数组
-//        }
-//        dump($temp);//得到每一门课程的开课班级编号,然后用用来跟学生信息对比即可出可选班级
         for($j=0;$j<200;$j++){//$stu_info[0]['classid'] 这就是学生的班级号
             if($temp[$j]==null)
                 continue;//由于从0开始遍历，用来过滤没有被赋值的数组
@@ -193,10 +194,7 @@ class IndexController extends Controller
                 }
             }
         }
-//        dump($k);
-//        dump($i);
-//        dump($data2);
-//        dump($data1);
+
         $this->assign('data1',$data1);//显示到模板
         $this->display();
     }
@@ -204,7 +202,6 @@ class IndexController extends Controller
     public function select_course($select = null,$cencel = null,$courseId = null){
         $this->logincheck();
         $this->assign('name', session('name'));
-        $change_choicenumber = null;
 
         $semeter_search = M("stuinfo");//需要查询stuinfo
         $data_semeter = $semeter_search->where("name='%s'", session('name'))->select();
@@ -215,28 +212,28 @@ class IndexController extends Controller
         $data['other_score']=0;
         $data['semester']=$data_semeter[0]['semester'];
         $data['score_proportion'] = 0;
-
+        $change_choicenumber = M("course");//需要更新改动course
+        $data2=$change_choicenumber->where("courseId='%s'",$courseId)->select();
+        dump($data2[0]['choicenumber']);
+        dump($data2);
         if($select == "选课"){
-            $change_choicenumber = M("course");//需要更新改动course
-            $data2=$change_choicenumber->where("courseId='%s'",$courseId)->select();
+            $select_course->add($data);//插入
             if((int)$data2[0]['choicenumber']>=(int)$data2[0]['peoplenumber']){
                 $this->error("课程容量已满","course_list");
                 return ;
             }
-            $select_course->add($data);//插入
-
-            $data2[0]['choicenumber'] = (int)$data2[0]['choicenumber']-1;
-            $change_choicenumber->where("courseId='%s'",$courseId)->save($data2);
+            $data2[0]['choicenumber'] = (int)$data2[0]['choicenumber']+1;
+            $data2[0]['choicenumber'] = (string)$data2[0]['choicenumber'];
+            dump($data2);
+            $change_choicenumber->where("courseId='%s'",$courseId)->setField("choiceNumber", $data2[0]['choicenumber']);
             $this -> success("选课成功!", "course_list");
         }
         elseif($cencel == "取消"){
-            $select_course ->where("courseid='%s' and no='%s'",$courseId,$data['no']) ->delete();
-            $change_choicenumber = M("course");
-            $data2=$change_choicenumber->where("courseId='%s'",$courseId)->select();
+            $select_course ->where("courseid='%s' and no='%s'",$courseId,$data['no']) ->delete();//删除
+            $data2[0]['choicenumber'] = (int)$data2[0]['choicenumber']-1;
+            $data2[0]['choicenumber'] = (string)$data2[0]['choicenumber'];
             dump($data2);
-            $data2[0]['choicenumber'] = (int)$data2[0]['choicenumber']+1;
-            dump($data2);
-            $change_choicenumber->where("courseId='%s'",$courseId)->save($data2);
+            $change_choicenumber->where("courseId='%s'",$courseId)->setField("choiceNumber", $data2[0]['choicenumber']);
             $this -> success("取消选课!", "course_list");
         }
     }
