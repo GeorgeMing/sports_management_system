@@ -54,7 +54,7 @@
             <i class="blue icon-user bigger-110"></i>体育选课</a>
         </li>
         <div style="float:right;">
-          <span>{$class_grade}  {$name},你好</span>
+          <span>{$name},你好</span>
           <a href="__URL__/loginout">注销</a>
           <a href="__URL__/changepassword">更改密码</a></div>
       </ul>
@@ -79,7 +79,7 @@
             <volist name="data1" id="qwe">
               <form method="post" action="__URL__/select_course">
                 <tr>
-                  <td><input name="courseId" value="{$qwe[courseid]}" readonly="true" type="hidden"/>{$qwe[courseid]}</td>
+                  <td><input name="courseId" value="{$qwe[courseid]}" readonly="true"/></td>
                   <td>{$qwe[coursename]}</td>
                   <td>{$qwe[adminid]}</td>
                   <td>{$qwe[peoplenumber]}</td>
