@@ -7,7 +7,7 @@ class IndexController extends Controller
     public function index()//主界面
     {
         $this->logincheck();
-        $this->assign('name', session('name'));//右上角显示用户名
+        $this->assign('name', session('stu_name'));//右上角显示用户名
         $class_info = M("stuinfo");
         $data1 = $class_info->select();
 //        dump($data1);
@@ -150,7 +150,7 @@ class IndexController extends Controller
     /**************以下是学生用户操作*****************/
     public function course_list(){//学生选课操作
         $this->logincheck();
-        $this->assign('name', session('name'));//右上角显示用户名
+        $this->assign('name', session('stu_name'));//右上角显示用户名
         $class_info = M("stuinfo");
         $data1 = $class_info->select();
 //        dump($data1);
@@ -226,10 +226,10 @@ class IndexController extends Controller
 
     public function select_course($select = null,$cencel = null,$courseId = null){
         $this->logincheck();
-        $this->assign('name', session('name'));
+        $this->assign('name', session('stu_name'));
 
         $semeter_search = M("stuinfo");//需要查询stuinfo
-        $data_semeter = $semeter_search->where("name='%s'", session('name'))->select();
+        $data_semeter = $semeter_search->where("name='%s'", session('stu_name'))->select();
         $select_course = M("student_score");//需要插入改动student_score
         $data['no']=session('no');
         $data['courseId']=$courseId;
