@@ -37,7 +37,7 @@
             var url="__URL__/test_table_ajax_del";//定义要发送到服务器的 URL（文件名）String(document.getElementById("col_name").value)
             url=url+"?scorename="+str;//把带有输入域内容的参数 (q) 添加到这个 URL
 //            url=url+"&sid="+Math.random();//添加一个随机数，以防服务器使用缓存文件
-            alert(url);
+//            alert(url);
             xmlHttp=GetXmlHttpObject();//调用 GetXmlHttpObject 函数来创建 XMLHTTP 对象
             xmlHttp.open("GET",url,true);//用给定的 URL 来打开打开这个 XMLHTTP 对象
             xmlHttp.send(null);//向服务器发送 HTTP 请求
@@ -47,13 +47,14 @@
         {
             if (xmlHttp.readyState==4 || xmlHttp.readyState=="complete") {
                 var response=xmlHttp.responseText;//用响应文本填充 txtHint 占位符 txtHint 的内容
-                alert(response);
+//                alert(response);
             }
         }
         function ajax_add()//调用ajax取得数据库查询的行号
         {
-//            var str = document.getElementById("col_name").value;//获取当前要加入的列名称,然后跟已经存在的列比对,有相同则退出
-            var str = "a";
+            var str = document.getElementById("col_name").value;//获取当前要加入的列名称,然后跟已经存在的列比对,有相同则退出
+//            alert(str);
+            str = str + "";
             for(var i=0;i<table233.rows.item(0).cells.length;i++)
             {
                 var col_name = document.getElementById("table233").rows[0].cells[i].innerHTML;

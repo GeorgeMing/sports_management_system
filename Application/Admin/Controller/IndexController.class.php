@@ -306,8 +306,8 @@ class IndexController extends Controller {
 
     }
     public function  test_table_ajax_add($q){
-        $response = session('response');//将查询出来的条数从test_table函数里传回前端
         if($q){
+        $response = session('response');//将查询出来的条数从test_table函数里传回前端
             echo $response;
         }
 //        $scores = M();
@@ -319,7 +319,7 @@ class IndexController extends Controller {
     }
     public function  test_table_ajax_del($scorename=null){
         //查询数据库,根据将传进来的$scorename,删除other_score中带有$scorename,的一组即可
-//        if($scorename){
+        if($scorename){
             $scorename = (string)$scorename;
             $courseId = session('courseidToDel');//$courseId共享
             $scores_back = M("student_score");
@@ -331,18 +331,32 @@ class IndexController extends Controller {
                 $stu_id[$j] = $data2[$j]['id'];
                 $arr = json_decode($data2[$j]['other_score'], true);
                 $arr2 = json_decode($data2[$j]['score_proportion'], true);
+                $delArr2 = 1;//用来记录删除哪条
                 foreach ($arr as $k => $v) {
                     //删除数组中特定的一行
+                    while(1){
+                        if($arr2[$delArr2]==null){
+                            $delArr2++;
+                        }
+                        else{
+                            break;
+                        }
+                    }
+
                     if ($k == $scorename) {
                         unset($arr[$k]);
+                        unset($arr2[$delArr2]);
+                        break;
                     }
+                    $delArr2++;
                 }
-                foreach ($arr2 as $k => $v) {
-                    //删除数组中特定的一行
-                    if ($k == sizeof(json_decode($data2[$j-1]['other_score'], true))) {
-                        unset($arr2[$k]);
-                    }
-                }
+//                foreach ($arr2 as $k => $v) {
+//                    //删除数组中特定的一行
+//                    if ($k == $delArr2) {
+//                        unset($arr2[$k]);
+//                        break;
+//                    }
+//                }
                 $arr = json_encode($arr, JSON_UNESCAPED_UNICODE);
                 $arr2 = json_encode($arr2, JSON_UNESCAPED_UNICODE);
                 $data2[$j]['other_score'] = $arr;
@@ -352,8 +366,8 @@ class IndexController extends Controller {
             }
 //            dump(sizeof(json_decode($data2[$j-1]['other_score'], true)));
             echo "success";
-//        }
-//        else echo "fail";
+        }
+        else echo "fail";
     }
     //        暂时不需要返回数据,保留待扩展
 //        if($scorename){
