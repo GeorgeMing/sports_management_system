@@ -36,7 +36,7 @@
 //发过去就可以了,暂时不需要返回什么信息,但是保留函数,便于以后扩展
             var url="__URL__/test_table_ajax_del";//定义要发送到服务器的 URL（文件名）String(document.getElementById("col_name").value)
             url=url+"?scorename="+str;//把带有输入域内容的参数 (q) 添加到这个 URL
-            url=url+"&sid="+Math.random();//添加一个随机数，以防服务器使用缓存文件
+//            url=url+"&sid="+Math.random();//添加一个随机数，以防服务器使用缓存文件
             alert(url);
             xmlHttp=GetXmlHttpObject();//调用 GetXmlHttpObject 函数来创建 XMLHTTP 对象
             xmlHttp.open("GET",url,true);//用给定的 URL 来打开打开这个 XMLHTTP 对象
@@ -134,7 +134,7 @@
             <!--<th> {$qwe}</th>-->
         <!--</volist>-->
         <volist name="scoreName" id="qwe">
-            <th> {$key}</th>
+            <th>{$key}</th>
         </volist>
     </tr>
     </thead>
@@ -147,22 +147,15 @@
                 <td>{$qwe[name]}</td>
                 <td>{$qwe[sex]}</td>
                 <td>{$qwe[score]}</td>
-                <td>
                     <!--这里要一个数组,一个变量-->
-                    <?php
-                        echo session('score_score')[session('php_html')];
+                <?php
+                    for($i=0;$i<session('html1');$i++)
+                    {
+                        echo '<td>'.session('score_score')[session('php_html')].'</td>';
                         $j=session('php_html')+1;
                         session('php_html',$j);
-                    ?>
-                </td>
-                <td>
-                    <!--这里要一个数组,一个变量-->
-                    <?php
-                        echo session('score_score')[session('php_html')];
-                        $j=session('php_html')+1;
-                        session('php_html',$j);
-                    ?>
-                </td>
+                    }
+                ?>
             </tr>
             </volist>
             <tr>
@@ -171,13 +164,17 @@
                 <td></td>
                 <td></td>
                 <td id="0"><input id="col_name" type="text" placeholder="请输入列名" ><input type="button" value="添加列" onClick="ajax_add(this)"></td>
-                <volist name="data" id="qwe">
                     <?php
+                    for($k=0;$k<session('html1');$k++)
+                    {
                         $j=session('php_html2')+1;
                         session('php_html2',$j);
                         $i = session('php_html2');
                         echo '<td id="'.$i.'">';
-                    ?><input type='button' value='删除列' onclick='ajax_del(this)'></td>
+                        echo '<input type='.button.' value='.删除列.' onclick= ajax_del(this)>';
+                        echo '</td>';
+                    }
+                    ?>
                 </volist>
             </tr>
             <tr>

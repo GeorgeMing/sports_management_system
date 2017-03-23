@@ -319,31 +319,41 @@ class IndexController extends Controller {
     }
     public function  test_table_ajax_del($scorename=null){
         //查询数据库,根据将传进来的$scorename,删除other_score中带有$scorename,的一组即可
-        if($scorename){
+//        if($scorename){
             $scorename = (string)$scorename;
             $courseId = session('courseidToDel');//$courseId共享
             $scores_back = M("student_score");
             $data2 = $scores_back->where("courseId='%s'",$courseId)->select();
-
+            dump($data2);
             for($j=0;$j<100;$j++) {//注意这里仅仅是100,没有查表,反正可以自己break，尽量调大就好！！！
                 if ($data2[$j]['id'] == null)//遍历到空串停止
                     break;
                 $stu_id[$j] = $data2[$j]['id'];
                 $arr = json_decode($data2[$j]['other_score'], true);
+                $arr2 = json_decode($data2[$j]['score_proportion'], true);
                 foreach ($arr as $k => $v) {
                     //删除数组中特定的一行
                     if ($k == $scorename) {
                         unset($arr[$k]);
                     }
                 }
+                foreach ($arr2 as $k => $v) {
+                    //删除数组中特定的一行
+                    if ($k == sizeof(json_decode($data2[$j-1]['other_score'], true))) {
+                        unset($arr2[$k]);
+                    }
+                }
                 $arr = json_encode($arr, JSON_UNESCAPED_UNICODE);
+                $arr2 = json_encode($arr2, JSON_UNESCAPED_UNICODE);
                 $data2[$j]['other_score'] = $arr;
-//        dump($data2[0]['other_score']);
+                $data2[$j]['score_proportion'] = $arr2;
                 $scores_back->where("courseId='%s' and id='%s'", $courseId, $stu_id[$j])->setField("other_score", $data2[$j]['other_score']);
+                $scores_back->where("courseId='%s' and id='%s'", $courseId, $stu_id[$j])->setField("score_proportion", $data2[$j]['score_proportion']);
             }
+//            dump(sizeof(json_decode($data2[$j-1]['other_score'], true)));
             echo "success";
-        }
-        else echo "fail";
+//        }
+//        else echo "fail";
     }
     //        暂时不需要返回数据,保留待扩展
 //        if($scorename){
@@ -381,10 +391,17 @@ class IndexController extends Controller {
             $score_score = array_merge($score_score, array_values($scoreName[$j]));//把二维变一维
             $score_proportion[$j] = json_decode($data[$j]['score_proportion'],true);//把json数据解析为array格式
         }
-        session('score_score', $score_score);
-        $this->assign('data',$data);
-        $this->assign('score_proportion',$score_proportion[0]);
+
+        session('score_score', $score_score);//其他成绩的集合,显示到前端
+        $html1 = sizeof($scoreName_front[0]);//嵌入php专用迭代器,每人有n条成绩
+        $html2 = sizeof($data);//嵌入php专用迭代器,有n个学生
+        session('html1', $html1);
+        session('html2', $html2);
+//        dump(sizeof($scoreName_front[0]));
+        $this->assign('data',$data);//显示总成绩以及其他数据
+        $this->assign('score_proportion',$score_proportion[0]);//显示成绩比例
         $this->assign('scoreName',$scoreName_front[0]);//打印此数组的key即可打印成绩名称
+//        sizeof($scoreName_front[0])
 //        dump($scoreName_front);
         $php_html=0;//初始化迭代器
         session('php_html', $php_html);
