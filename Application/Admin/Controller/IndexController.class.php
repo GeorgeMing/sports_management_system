@@ -297,89 +297,94 @@ class IndexController extends Controller {
         $this->assign('data',$data);
         $this->display(course_stu_list);
     }
-    //文件下载
-    private function fileDownload(){
 
-    }
-    //文件上传
-    private function fileUpload(){
-
-    }
-    public function  test_table_ajax_add($q){
-        if($q){
+    public function  test_table_ajax_add($colName=null){
         $response = session('response');//将查询出来的条数从test_table函数里传回前端
-            echo $response;
-        }
-//        $scores = M();
-//        $sql = "ALTER TABLE think_student_score ADD '233' IndexControllerT(3) NOT NULL";
-//        $sql = "ALTER TABLE think_student_score ADD `233` INT(3) NOT NULL";
-//        $scores->execute($sql);//查询当前登录学生所选的课程
-////        ALTER TABLE `think_student_score`DROP `平时成绩`;
-//        dump($q);
-    }
-    public function  test_table_ajax_del($scorename=null){
-        //查询数据库,根据将传进来的$scorename,删除other_score中带有$scorename,的一组即可
-        if($scorename){
-            $scorename = (string)$scorename;
-            $courseId = session('courseidToDel');//$courseId共享
+        echo $response;
+        if($colName){
+//下面开始在other_score后面加上$colName=0并存回去,成绩比例也要这样做
             $scores_back = M("student_score");
+            $courseId = session('courseidToDel');
             $data2 = $scores_back->where("courseId='%s'",$courseId)->select();
-            dump($data2);
+//            dump($data2);
+//            dump(sizeof($data2));
+            $numName = sizeof(json_decode($data2[0]['other_score'], true))+1;
+//            dump($numName);
+            $colName=(string)$colName;
+            $numName=(string)$numName;
+            $addArray = $colName;
+            $addArray2 = Array($numName=>"0");
+
             for($j=0;$j<100;$j++) {//注意这里仅仅是100,没有查表,反正可以自己break，尽量调大就好！！！
                 if ($data2[$j]['id'] == null)//遍历到空串停止
                     break;
                 $stu_id[$j] = $data2[$j]['id'];
                 $arr = json_decode($data2[$j]['other_score'], true);
                 $arr2 = json_decode($data2[$j]['score_proportion'], true);
-                $delArr2 = 1;//用来记录删除哪条
-                foreach ($arr as $k => $v) {
-                    //删除数组中特定的一行
-                    while(1){
-                        if($arr2[$delArr2]==null){
-                            $delArr2++;
-                        }
-                        else{
-                            break;
-                        }
-                    }
+//                dump($arr);
+                $arr = array_merge($addArray,$arr);//把新来的加在后面
+//                array_push($arr,$addArray);
+//                $arr = $arr+$addArray;
 
-                    if ($k == $scorename) {
-                        unset($arr[$k]);
-                        unset($arr2[$delArr2]);
-                        break;
-                    }
-                    $delArr2++;
-                }
-//                foreach ($arr2 as $k => $v) {
-//                    //删除数组中特定的一行
-//                    if ($k == $delArr2) {
-//                        unset($arr2[$k]);
-//                        break;
-//                    }
-//                }
+                $arr2 = $arr2+$addArray2;
+//                dump($arr);
+//                dump($arr2);
                 $arr = json_encode($arr, JSON_UNESCAPED_UNICODE);
-                $arr2 = json_encode($arr2, JSON_UNESCAPED_UNICODE);
+                $arr2 = json_encode($arr2,JSON_UNESCAPED_UNICODE);
+//                dump($arr);
+//                dump($arr2);
+//                dump($addArray2);
                 $data2[$j]['other_score'] = $arr;
                 $data2[$j]['score_proportion'] = $arr2;
                 $scores_back->where("courseId='%s' and id='%s'", $courseId, $stu_id[$j])->setField("other_score", $data2[$j]['other_score']);
                 $scores_back->where("courseId='%s' and id='%s'", $courseId, $stu_id[$j])->setField("score_proportion", $data2[$j]['score_proportion']);
             }
+        }
+    }
+    public function  test_table_ajax_del($scorename=null){
+        //查询数据库,根据将传进来的$scorename,删除other_score中带有$scorename的一组即可
+        if($scorename){
+            $scorename = (string)$scorename;
+            $courseId = session('courseidToDel');//$courseId共享
+            $scores_back = M("student_score");
+            $data2 = $scores_back->where("courseId='%s'",$courseId)->select();
+//            dump($data2);
+            for($j=0;$j<100;$j++){
+                //注意这里仅仅是100,没有查表,反正可以自己break，尽量调大就好！！！
+                if ($data2[$j]['id'] == null)//遍历到空串停止
+                    break;
+                $stu_id[$j] = $data2[$j]['id'];
+                $arr = json_decode($data2[$j]['other_score'], true);
+//                $arr2 = json_decode($data2[$j]['score_proportion'], true);
+                $delArr2 = 1;//用来记录删除哪条
+                foreach ($arr as $k => $v) {
+                    //删除数组中特定的一行
+//                    while(1){
+//                        if($arr2[$delArr2]==null){
+//                            $delArr2++;
+//                        }
+//                        else{
+//                            break;
+//                        }
+//                    }
+                    if ($k == $scorename) {
+                        unset($arr[$k]);
+                        unset($arr2[$delArr2]);
+                        break;
+                    }
+//                    $delArr2++;
+                }
+                $arr = json_encode($arr, JSON_UNESCAPED_UNICODE);
+//                $arr2 = json_encode($arr2, JSON_UNESCAPED_UNICODE);
+                $data2[$j]['other_score'] = $arr;
+//                $data2[$j]['score_proportion'] = $arr2;
+                $scores_back->where("courseId='%s' and id='%s'", $courseId, $stu_id[$j])->setField("other_score", $data2[$j]['other_score']);
+//                $scores_back->where("courseId='%s' and id='%s'", $courseId, $stu_id[$j])->setField("score_proportion", $data2[$j]['score_proportion']);
+            }
 //            dump(sizeof(json_decode($data2[$j-1]['other_score'], true)));
             echo "success";
-        }
-        else echo "fail";
+        } else echo "fail";
     }
-    //        暂时不需要返回数据,保留待扩展
-//        if($scorename){
-//            echo $courseId;
-//        }
-
-//        $scores = M();
-//        $sql = "ALTER TABLE think_student_score ADD '233' IndexControllerT(3) NOT NULL";
-//        $sql = "ALTER TABLE think_student_score ADD `233` INT(3) NOT NULL";
-//        $scores->execute($sql);//查询当前登录学生所选的课程
-////        ALTER TABLE `think_student_score`DROP `平时成绩`;
-//        dump($q);
 
     public function test_table($courseId = null){
         $this->logincheck();
@@ -387,7 +392,7 @@ class IndexController extends Controller {
         $this->assign('list', 'score');
         $this->assign('username', session('username'));
         $scores = M();
-        $sql = "select c.courseName,a.no,b.name,b.sex,a.score,a.other_score,a.score_proportion
+        $sql = "select c.courseName,a.no,b.name,b.sex,a.score,a.other_score
                 from think_student_score a ,think_stuinfo b,think_course c
                 where a.courseId = c.courseId and a.no=b.no and '".$courseId."'=a.courseId";
         $data = $scores->query($sql);//查询当前登录学生所选的课程
@@ -395,32 +400,41 @@ class IndexController extends Controller {
 //        dump($data);
 //        构建四样东西给前端,成绩名称,分数,删除按钮,成绩比例
         //首先是构建成绩名称和分数
-        $score_score = array();
-        $score_proportion = array();
+        $scoreAndProportion = array();//成绩和比例
+        $scoreName_front = array();
         for($j=0;$j<100;$j++){//注意这里仅仅是100,没有查表,反正可以自己break，尽量调大就好！！！
             if(array_values(json_decode($data[$j]['other_score'], true))==null)//遍历到空串停止
                 break;
             $scoreName_front[$j] = json_decode($data[$j]['other_score'],true);
             $scoreName[$j] = array_values(json_decode($data[$j]['other_score'], true));//把json数据解析为array格式
-            $score_score = array_merge($score_score, array_values($scoreName[$j]));//把二维变一维
+            $scoreAndProportion = array_merge($scoreAndProportion, array_values($scoreName[$j]));//把二维变一维
             $score_proportion[$j] = json_decode($data[$j]['score_proportion'],true);//把json数据解析为array格式
         }
-
-        session('score_score', $score_score);//其他成绩的集合,显示到前端
-        $html1 = sizeof($scoreName_front[0]);//嵌入php专用迭代器,每人有n条成绩
+//        dump(explode('#',$scoreAndProportion[0]));
+//        dump($scoreAndProportion);//把这个拆分成成绩和比例就可以了
+        for($j=0;$j<100;$j++){
+            if($scoreAndProportion[$j]==null){
+                break;
+            }
+            $scoreAndProportion[$j] = explode('#',$scoreAndProportion[$j]);
+        }
+        $html1 = sizeof($scoreName_front[0]);//嵌入php专用迭代器,每人有n条成绩\
         $html2 = sizeof($data);//嵌入php专用迭代器,有n个学生
         session('html1', $html1);
         session('html2', $html2);
-//        dump(sizeof($scoreName_front[0]));
-        $this->assign('data',$data);//显示总成绩以及其他数据
-        $this->assign('score_proportion',$score_proportion[0]);//显示成绩比例
-        $this->assign('scoreName',$scoreName_front[0]);//打印此数组的key即可打印成绩名称
-//        sizeof($scoreName_front[0])
-//        dump($scoreName_front);
+        session('score_score', $scoreAndProportion);//输出所有人的其他成绩
         $php_html=0;//初始化迭代器
         session('php_html', $php_html);
         $php_html2=1;
         session('php_html2', $php_html2);
+
+        for($j=0;$j<$html1;$j++) {
+            $scoreAndProportion2[$j] = $scoreAndProportion[$j];//取前n(n=成绩种数)条即可
+        }
+        $this->assign('scoreAndProportion2',$scoreAndProportion2);//输出成绩比例
+
+        $this->assign('data',$data);//显示总成绩以及其他数据
+        $this->assign('scoreName',$scoreName_front[0]);//打印此数组的key即可打印成绩名称
         $this->display(test_table);
     }
 

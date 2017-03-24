@@ -66,7 +66,7 @@
             }
 
             var url="__URL__/test_table_ajax_add";//定义要发送到服务器的 URL（文件名）String(document.getElementById("col_name").value)
-            url=url+"?q="+str;//把带有输入域内容的参数 (q) 添加到这个 URL
+            url=url+"?colName="+str;//把带有输入域内容的参数 (q) 添加到这个 URL
             url=url+"&sid="+Math.random();//添加一个随机数，以防服务器使用缓存文件
 //            alert(url);
             xmlHttp=GetXmlHttpObject();//调用 GetXmlHttpObject 函数来创建 XMLHTTP 对象
@@ -152,7 +152,7 @@
                 <?php
                     for($i=0;$i<session('html1');$i++)
                     {
-                        echo '<td>'.session('score_score')[session('php_html')].'</td>';
+                        echo '<td>'.session('score_score')[session('php_html')][0].'</td>';
                         $j=session('php_html')+1;
                         session('php_html',$j);
                     }
@@ -184,8 +184,8 @@
                 <td></td>
                 <td><input type="button" value="计算总成绩" onclick="checkSumSubmit()" ></td>
                 <td>成绩比例:</td>
-                <volist name="score_proportion" id="qwe">
-                    <td> {$qwe}</td>
+                <volist name="scoreAndProportion2" id="qwe">
+                    <td>{$qwe[1]}</td>
                 </volist>
             </tr>
 
