@@ -19,6 +19,7 @@
                                     <th>上课时间</th>
                                     <th>课程人数</th>
                                     <th>已选人数</th>
+                                    <th>选课截止时间</th>
                                     <th>操作</th>
                                 </tr>
                                 </thead>
@@ -33,6 +34,7 @@
                                             <td>{$qwe[time]}</td>
                                             <td>{$qwe[peoplenumber]}</td>
                                             <td>{$qwe[choicenumber]}</td>
+                                            <td>{$qwe[endingtime]}</td>
                                             <td width="20%">
                                                 <input name="swtich" type="submit" class="btn btn-danger" value="取消课程"/>
                                                 <input name="swtich" type="submit" class="btn btn-success" value="选课学生"/>
@@ -195,6 +197,10 @@
                                 <tr>
                                     <td>上课时间</td>
                                     <td><input type="text" name="time"/></td>
+                                </tr>
+                                <tr>
+                                    <td>选课截止时间</td>
+                                    <td><input type="date" name="endingtime"/></td>
                                 </tr>
                                 <tr>
                                     <td>课程人数</td>

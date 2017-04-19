@@ -11,6 +11,7 @@ class IndexController extends Controller
         $class_info = M("stuinfo");
         $data1 = $class_info->select();
 //        dump($data1);
+        //用于班级显示而已
         for($i=0;$i<100;$i++){
             if($data1[$i]['no'] == session('username')){
                 if (strlen($data1[$i]['classid']) == 2) {
@@ -21,15 +22,37 @@ class IndexController extends Controller
                     $temp_class = substr($data1[$i]['classid'], 1, 2);
                 }
             }
-
         }
-
         $class_grade = "高".$temp_grade."(".$temp_class.")"."班";
         $this->assign('class_grade', $class_grade);
+        //查询学生每个学期、课程、分数、判断是否合格
+
+        $show = M();
+        $sql = "select a.courseName,b.*,c.name
+from think_course a,think_student_score b ,think_stuinfo c
+where a.courseId = b.courseId and b.no=c.no and c.name = '".session('stuName')."'";
+//        $dongxi = substr($data_semeter[0]['classid'],0,1);
+        $data = $show->query($sql);
+        //稍微处理一下数据便于显示到前端
+        for($i=0;$i<100;$i++) {
+            if($data[$i]==null)break;
+            $data[$i]['access'] = 0;//用于存放是否及格显示到前端
+            if(substr($data[$i]['semester'],1,1) == 1) $temp = "上学期";
+            else $temp = "下学期";
+            if(substr($data[$i]['semester'],0,1) == 1)
+                $data[$i]['semester'] = "高一";
+            elseif (substr($data[$i]['semester'],0,1) == 2)
+                $data[$i]['semester'] = "高二";
+            elseif (substr($data[$i]['semester'],0,1) == 3)
+                $data[$i]['semester'] = "高三";
+            $data[$i]['semester'] = $data[$i]['semester']."".$temp;
+            //以上是学期
+            //以下是是否及格
+            if($data[$i]['score']>=60)$data[$i]['access'] = "及格";
+            elseif($data[$i]['score']<60)$data[$i]['access'] = "不及格";
+        }
+        $this->assign('data',$data);
         $this->display();
-//        SELECT grade,classNo
-//FROM think_class ,think_stuinfo
-//WHERE classId=id AND id=7
     }
 
     public function logincheck()//登录检查
@@ -240,7 +263,9 @@ class IndexController extends Controller
         $data['courseId']=$courseId;
         $data['score']=0;
         $data['other_score']=0;
-        $data['semester']=$data_semeter[0]['semester'];
+        //为了分辨这个成绩是高几第几学期，需要在学期项加点东西
+        $dongxi = substr($data_semeter[0]['classid'],0,1);
+        $data['semester']=$dongxi."".$data_semeter[0]['semester'];
         $data['score_proportion'] = 0;
         $change_choicenumber = M("course");//需要更新改动course
         $data2=$change_choicenumber->where("courseId='%s'",$courseId)->select();

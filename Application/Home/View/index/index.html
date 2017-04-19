@@ -67,35 +67,20 @@
               <tr>
                 <th>学期</th>
                 <th>课程</th>
-                <th>分数</th>
-                <th class="hidden-480">合格</th></tr>
+                <th>总成绩</th>
+                <th class="hidden-480">是否及格</th></tr>
             </thead>
             <tbody>
-              <tr>
-                <td>高一上学期</td>
-                <td>足球</td>
-                <td class="hidden-480">85</td>
-                <td>是</td></tr>
-              <tr>
-                <td>高一下学期</td>
-                <td>网球</td>
-                <td class="hidden-480">95</td>
-                <td>是</td></tr>
-              <tr>
-                <td>高二上学期</td>
-                <td>羽毛球</td>
-                <td class="hidden-480">55</td>
-                <td>否</td></tr>
-              <tr>
-                <td>高二下学期</td>
-                <td>篮球</td>
-                <td class="hidden-480">80</td>
-                <td>是</td></tr>
-              <tr>
-                <td>高三上学期</td>
-                <td>兵乓球</td>
-                <td class="hidden-480">88</td>
-                <td>是</td></tr>
+              <volist name="data" id="qwe2">
+                <form method="post" action="__URL__/index">
+                  <tr>
+                    <td>{$qwe2[semester]}</td>
+                    <td>{$qwe2[coursename]}</td>
+                    <td>{$qwe2[score]}</td>
+                    <td>{$qwe2[access]}</td>
+                  </tr>
+                </form>
+              </volist>
             </tbody>
           </table>
         </div>
