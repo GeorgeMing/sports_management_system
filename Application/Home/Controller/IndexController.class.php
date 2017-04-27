@@ -138,12 +138,7 @@ class IndexController extends Controller
             $data['password'] = $password;
             $data['sex'] = $sex;
             $data['classId']=$grade."".$classes;
-            if((int)date('m',time()) > 9){
-                $data['semester'] = 1;
-            }else{
-                $data['semester'] = 2;
-            }
-//            echo $no."".$name."".$password."".$sex."".$grade."".$classes;
+            echo $no."".$name."".$password."".$sex."".$grade."".$classes;
             if($no&&$name&&$password&&$sex&&$grade&&$classes){
                 $InsertStuinfo->add($data);
                 $this -> success("添加成功!", "index");
